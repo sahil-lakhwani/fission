@@ -45,7 +45,7 @@ type (
 )
 
 func newMessageQueueTrigger(c *V1Client) MessageQueueTriggerInterface {
-	return &MessageQueueTrigger{client:c.restClient}
+	return &MessageQueueTrigger{client: c.restClient}
 }
 
 func (c *MessageQueueTrigger) Create(t *fv1.MessageQueueTrigger) (*metav1.ObjectMeta, error) {

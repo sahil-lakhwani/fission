@@ -46,7 +46,7 @@ type (
 )
 
 func newKubeWatcher(c *V1Client) KubeWatcherInterface {
-	return &KubeWatcher{client:c.restClient}
+	return &KubeWatcher{client: c.restClient}
 }
 
 func (c *KubeWatcher) Create(w *fv1.KubernetesWatchTrigger) (*metav1.ObjectMeta, error) {

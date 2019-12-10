@@ -45,7 +45,7 @@ type (
 )
 
 func newTimeTriggerClient(c *V1Client) TimeTriggerInterface {
-	return &TimeTrigger{client:c.restClient}
+	return &TimeTrigger{client: c.restClient}
 }
 
 func (c *TimeTrigger) Create(t *fv1.TimeTrigger) (*metav1.ObjectMeta, error) {

@@ -45,7 +45,7 @@ type (
 )
 
 func newHTTPTriggerClient(c *V1Client) HTTPTriggerInterface {
-	return &HTTPTrigger{client:c.restClient}
+	return &HTTPTrigger{client: c.restClient}
 }
 
 func (c *HTTPTrigger) Create(t *fv1.HTTPTrigger) (*metav1.ObjectMeta, error) {

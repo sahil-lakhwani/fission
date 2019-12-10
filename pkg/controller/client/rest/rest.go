@@ -28,7 +28,7 @@ type (
 
 func MakeRestClient(serverUrl string) Interface {
 	return &RESTClient{
-		url:     strings.TrimSuffix(serverUrl, "/"),
+		url: strings.TrimSuffix(serverUrl, "/"),
 	}
 }
 

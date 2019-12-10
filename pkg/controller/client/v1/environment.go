@@ -55,7 +55,7 @@ func getEnvEncodingPayload(env *fv1.Environment) ([]byte, error) {
 }
 
 func newEnvironmentClient(c *V1Client) EnvironmentInterface {
-	return &Environment{client:c.restClient}
+	return &Environment{client: c.restClient}
 }
 
 func (c *Environment) Create(env *fv1.Environment) (*metav1.ObjectMeta, error) {

@@ -51,7 +51,7 @@ type (
 )
 
 func newFunctionClient(c *V1Client) FunctionInterface {
-	return &Function{client:c.restClient}
+	return &Function{client: c.restClient}
 }
 
 func (c *Function) Create(f *fv1.Function) (*metav1.ObjectMeta, error) {

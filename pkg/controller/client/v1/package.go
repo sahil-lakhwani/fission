@@ -45,7 +45,7 @@ type (
 )
 
 func newPackageClient(c *V1Client) PackageInterface {
-	return &Package{client:c.restClient}
+	return &Package{client: c.restClient}
 }
 
 func (c *Package) Create(f *fv1.Package) (*metav1.ObjectMeta, error) {

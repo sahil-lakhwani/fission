@@ -28,7 +28,7 @@ type (
 )
 
 func MakeV1Client(restClient rest.Interface) *V1Client {
-	return &V1Client {restClient: restClient}
+	return &V1Client{restClient: restClient}
 }
 
 func (c *V1Client) Misc() MiscInterface {
