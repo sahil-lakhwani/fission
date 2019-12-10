@@ -32,6 +32,20 @@ import (
 	"github.com/fission/fission/pkg/info"
 )
 
+// TODO: we should remove this interface, having this for now is for backward compatibility.
+type (
+	MiscGetter interface {
+		Misc() MiscInterface
+	}
+
+	MiscInterface interface {
+		SecretGet(m *metav1.ObjectMeta) (*apiv1.Secret, error)
+		ConfigMapGet(m *metav1.ObjectMeta) (*apiv1.ConfigMap, error)
+		GetSvcURL(label string) (string, error)
+		ServerInfo() (*info.ServerInfo, error)
+	}
+)
+
 func (c *Client) SecretGet(m *metav1.ObjectMeta) (*apiv1.Secret, error) {
 	relativeUrl := fmt.Sprintf("secrets/%v", m.Name)
 	relativeUrl += fmt.Sprintf("?namespace=%v", m.Namespace)

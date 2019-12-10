@@ -18,6 +18,7 @@ package client
 
 import (
 	"bytes"
+	"github.com/fission/fission/pkg/controller/client/rest"
 	"io"
 	"io/ioutil"
 	"net/http"
@@ -33,9 +34,20 @@ var (
 )
 
 type (
-	Client struct {
-		Url     string
-		Headers map[string]string
+	FissionV1Client interface {
+		MiscGetter
+		CanaryConfigGetter
+		EnvironmentGetter
+		FunctionGetter
+		HTTPTriggerGetter
+		KubeWatcherGetter
+		MessageQueueTriggerGetter
+		PackageGetter
+		TimeTriggerGetter
+	}
+
+	V1Client struct {
+		restClient rest.Interface
 	}
 )
 

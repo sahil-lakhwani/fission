@@ -25,6 +25,20 @@ import (
 	fv1 "github.com/fission/fission/pkg/apis/fission.io/v1"
 )
 
+type (
+	TimeTriggerGetter interface {
+		TimeTrigger() TimeTriggerInterface
+	}
+
+	TimeTriggerInterface interface {
+		Create(t *fv1.TimeTrigger) (*metav1.ObjectMeta, error)
+		Get(m *metav1.ObjectMeta) (*fv1.TimeTrigger, error)
+		Update(t *fv1.TimeTrigger) (*metav1.ObjectMeta, error)
+		Delete(m *metav1.ObjectMeta) error
+		List(ns string) ([]fv1.TimeTrigger, error)
+	}
+)
+
 func (c *Client) TimeTriggerCreate(t *fv1.TimeTrigger) (*metav1.ObjectMeta, error) {
 	err := t.Validate()
 	if err != nil {

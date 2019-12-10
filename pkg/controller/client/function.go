@@ -30,6 +30,22 @@ import (
 	"github.com/fission/fission/pkg/fission-cli/console"
 )
 
+type (
+	FunctionGetter interface {
+		Function() FunctionInterface
+	}
+
+	FunctionInterface interface {
+		Create(f *fv1.Function) (*metav1.ObjectMeta, error)
+		Get(m *metav1.ObjectMeta) (*fv1.Function, error)
+		GetRawDeployment(m *metav1.ObjectMeta) ([]byte, error)
+		Update(f *fv1.Function) (*metav1.ObjectMeta, error)
+		Delete(m *metav1.ObjectMeta) error
+		List(functionNamespace string) ([]fv1.Function, error)
+		PodLogs(m *metav1.ObjectMeta) (io.ReadCloser, int, error)
+	}
+)
+
 func (c *Client) FunctionCreate(f *fv1.Function) (*metav1.ObjectMeta, error) {
 	err := f.Validate()
 	if err != nil {

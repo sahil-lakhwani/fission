@@ -25,6 +25,20 @@ import (
 	fv1 "github.com/fission/fission/pkg/apis/fission.io/v1"
 )
 
+type (
+	MessageQueueTriggerGetter interface {
+		MessageQueueTrigger() MessageQueueTriggerInterface
+	}
+
+	MessageQueueTriggerInterface interface {
+		Create(t *fv1.MessageQueueTrigger) (*metav1.ObjectMeta, error)
+		Get(m *metav1.ObjectMeta) (*fv1.MessageQueueTrigger, error)
+		Update(mqTrigger *fv1.MessageQueueTrigger) (*metav1.ObjectMeta, error)
+		Delete(m *metav1.ObjectMeta) error
+		List(mqType string, ns string) ([]fv1.MessageQueueTrigger, error)
+	}
+)
+
 func (c *Client) MessageQueueTriggerCreate(t *fv1.MessageQueueTrigger) (*metav1.ObjectMeta, error) {
 	err := t.Validate()
 	if err != nil {

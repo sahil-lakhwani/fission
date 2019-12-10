@@ -25,6 +25,20 @@ import (
 	fv1 "github.com/fission/fission/pkg/apis/fission.io/v1"
 )
 
+type (
+	CanaryConfigGetter interface {
+		CanaryConfig() CanaryConfigInterface
+	}
+
+	CanaryConfigInterface interface {
+		Create(canaryConf *fv1.CanaryConfig) (*metav1.ObjectMeta, error)
+		Get(m *metav1.ObjectMeta) (*fv1.CanaryConfig, error)
+		Update(canaryConf *fv1.CanaryConfig) (*metav1.ObjectMeta, error)
+		Delete(m *metav1.ObjectMeta) error
+		List(ns string) ([]fv1.CanaryConfig, error)
+	}
+)
+
 func (c *Client) CanaryConfigCreate(canaryConf *fv1.CanaryConfig) (*metav1.ObjectMeta, error) {
 	reqbody, err := json.Marshal(canaryConf)
 	if err != nil {

@@ -26,6 +26,20 @@ import (
 	ferror "github.com/fission/fission/pkg/error"
 )
 
+type (
+	KubeWatcherGetter interface {
+		KubeWatcher() KubeWatcherInterface
+	}
+
+	KubeWatcherInterface interface {
+		Create(w *fv1.KubernetesWatchTrigger) (*metav1.ObjectMeta, error)
+		Get(m *metav1.ObjectMeta) (*fv1.KubernetesWatchTrigger, error)
+		Update(w *fv1.KubernetesWatchTrigger) (*metav1.ObjectMeta, error)
+		Delete(m *metav1.ObjectMeta) error
+		List(ns string) ([]fv1.KubernetesWatchTrigger, error)
+	}
+)
+
 func (c *Client) WatchCreate(w *fv1.KubernetesWatchTrigger) (*metav1.ObjectMeta, error) {
 	err := w.Validate()
 	if err != nil {

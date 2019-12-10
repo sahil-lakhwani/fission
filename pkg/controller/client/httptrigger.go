@@ -25,6 +25,20 @@ import (
 	fv1 "github.com/fission/fission/pkg/apis/fission.io/v1"
 )
 
+type (
+	HTTPTriggerGetter interface {
+		HTTPTrigger() HTTPTriggerInterface
+	}
+
+	HTTPTriggerInterface interface {
+		Create(t *fv1.HTTPTrigger) (*metav1.ObjectMeta, error)
+		Get(m *metav1.ObjectMeta) (*fv1.HTTPTrigger, error)
+		Update(t *fv1.HTTPTrigger) (*metav1.ObjectMeta, error)
+		Delete(m *metav1.ObjectMeta) error
+		List(triggerNamespace string) ([]fv1.HTTPTrigger, error)
+	}
+)
+
 func (c *Client) HTTPTriggerCreate(t *fv1.HTTPTrigger) (*metav1.ObjectMeta, error) {
 	err := t.Validate()
 	if err != nil {

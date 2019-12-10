@@ -25,6 +25,20 @@ import (
 	fv1 "github.com/fission/fission/pkg/apis/fission.io/v1"
 )
 
+type (
+	PackageGetter interface {
+		Package() PackageInterface
+	}
+
+	PackageInterface interface {
+		Create(f *fv1.Package) (*metav1.ObjectMeta, error)
+		Get(m *metav1.ObjectMeta) (*fv1.Package, error)
+		Update(f *fv1.Package) (*metav1.ObjectMeta, error)
+		Delete(m *metav1.ObjectMeta) error
+		List(pkgNamespace string) ([]fv1.Package, error)
+	}
+)
+
 func (c *Client) PackageCreate(f *fv1.Package) (*metav1.ObjectMeta, error) {
 	err := f.Validate()
 	if err != nil {

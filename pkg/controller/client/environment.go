@@ -27,6 +27,20 @@ import (
 	v1generator "github.com/fission/fission/pkg/generator/v1"
 )
 
+type (
+	EnvironmentGetter interface {
+		Environment() EnvironmentInterface
+	}
+
+	EnvironmentInterface interface {
+		Create(env *fv1.Environment) (*metav1.ObjectMeta, error)
+		Get(m *metav1.ObjectMeta) (*fv1.Environment, error)
+		Update(env *fv1.Environment) (*metav1.ObjectMeta, error)
+		Delete(m *metav1.ObjectMeta) error
+		List(ns string) ([]fv1.Environment, error)
+	}
+)
+
 func getEnvEncodingPayload(env *fv1.Environment) ([]byte, error) {
 	generator, err := v1generator.CreateEnvironmentGeneratorFromObj(env)
 	if err != nil {
