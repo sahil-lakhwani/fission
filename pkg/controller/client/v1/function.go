@@ -14,11 +14,12 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-package client
+package v1
 
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/fission/fission/pkg/controller/client/rest"
 	"io"
 	"net/http"
 	"net/url"
@@ -42,11 +43,18 @@ type (
 		Update(f *fv1.Function) (*metav1.ObjectMeta, error)
 		Delete(m *metav1.ObjectMeta) error
 		List(functionNamespace string) ([]fv1.Function, error)
-		PodLogs(m *metav1.ObjectMeta) (io.ReadCloser, int, error)
+	}
+
+	Function struct {
+		client rest.Interface
 	}
 )
 
-func (c *Client) FunctionCreate(f *fv1.Function) (*metav1.ObjectMeta, error) {
+func newFunctionClient(c *V1Client) FunctionInterface {
+	return &Function{client:c.restClient}
+}
+
+func (c *Function) Create(f *fv1.Function) (*metav1.ObjectMeta, error) {
 	err := f.Validate()
 	if err != nil {
 		return nil, fv1.AggregateValidationErrors("Function", err)
@@ -57,13 +65,13 @@ func (c *Client) FunctionCreate(f *fv1.Function) (*metav1.ObjectMeta, error) {
 		return nil, err
 	}
 
-	resp, err := c.create("functions", "application/json", reqbody)
+	resp, err := c.client.Create("functions", "application/json", reqbody)
 	if err != nil {
 		return nil, err
 	}
 	defer resp.Body.Close()
 
-	body, err := c.handleCreateResponse(resp)
+	body, err := handleCreateResponse(resp)
 	if err != nil {
 		return nil, err
 	}
@@ -77,17 +85,17 @@ func (c *Client) FunctionCreate(f *fv1.Function) (*metav1.ObjectMeta, error) {
 	return &m, nil
 }
 
-func (c *Client) FunctionGet(m *metav1.ObjectMeta) (*fv1.Function, error) {
+func (c *Function) Get(m *metav1.ObjectMeta) (*fv1.Function, error) {
 	relativeUrl := fmt.Sprintf("functions/%v", m.Name)
 	relativeUrl += fmt.Sprintf("?namespace=%v", m.Namespace)
 
-	resp, err := c.get(relativeUrl)
+	resp, err := c.client.Get(relativeUrl)
 	if err != nil {
 		return nil, err
 	}
 	defer resp.Body.Close()
 
-	body, err := c.handleResponse(resp)
+	body, err := handleResponse(resp)
 	if err != nil {
 		return nil, err
 	}
@@ -101,21 +109,21 @@ func (c *Client) FunctionGet(m *metav1.ObjectMeta) (*fv1.Function, error) {
 	return &f, nil
 }
 
-func (c *Client) FunctionGetRawDeployment(m *metav1.ObjectMeta) ([]byte, error) {
+func (c *Function) GetRawDeployment(m *metav1.ObjectMeta) ([]byte, error) {
 	relativeUrl := fmt.Sprintf("functions/%v", m.Name)
 	relativeUrl += fmt.Sprintf("?namespace=%v", m.Namespace)
 	relativeUrl += fmt.Sprintf("&deploymentraw=1")
 
-	resp, err := c.get(relativeUrl)
+	resp, err := c.client.Get(relativeUrl)
 	if err != nil {
 		return nil, err
 	}
 	defer resp.Body.Close()
 
-	return c.handleResponse(resp)
+	return handleResponse(resp)
 }
 
-func (c *Client) FunctionUpdate(f *fv1.Function) (*metav1.ObjectMeta, error) {
+func (c *Function) Update(f *fv1.Function) (*metav1.ObjectMeta, error) {
 	err := f.Validate()
 	if err != nil {
 		return nil, fv1.AggregateValidationErrors("Function", err)
@@ -127,13 +135,13 @@ func (c *Client) FunctionUpdate(f *fv1.Function) (*metav1.ObjectMeta, error) {
 	}
 	relativeUrl := fmt.Sprintf("functions/%v", f.Metadata.Name)
 
-	resp, err := c.put(relativeUrl, "application/json", reqbody)
+	resp, err := c.client.Put(relativeUrl, "application/json", reqbody)
 	if err != nil {
 		return nil, err
 	}
 	defer resp.Body.Close()
 
-	body, err := c.handleResponse(resp)
+	body, err := handleResponse(resp)
 	if err != nil {
 		return nil, err
 	}
@@ -146,21 +154,21 @@ func (c *Client) FunctionUpdate(f *fv1.Function) (*metav1.ObjectMeta, error) {
 	return &m, nil
 }
 
-func (c *Client) FunctionDelete(m *metav1.ObjectMeta) error {
+func (c *Function) Delete(m *metav1.ObjectMeta) error {
 	relativeUrl := fmt.Sprintf("functions/%v", m.Name)
 	relativeUrl += fmt.Sprintf("?namespace=%v", m.Namespace)
-	return c.delete(relativeUrl)
+	return c.client.Delete(relativeUrl)
 }
 
-func (c *Client) FunctionList(functionNamespace string) ([]fv1.Function, error) {
+func (c *Function) List(functionNamespace string) ([]fv1.Function, error) {
 	relativeUrl := fmt.Sprintf("functions?namespace=%v", functionNamespace)
-	resp, err := c.get(relativeUrl)
+	resp, err := c.client.Get(relativeUrl)
 	if err != nil {
 		return nil, err
 	}
 	defer resp.Body.Close()
 
-	body, err := c.handleResponse(resp)
+	body, err := handleResponse(resp)
 	if err != nil {
 		return nil, err
 	}
@@ -172,30 +180,4 @@ func (c *Client) FunctionList(functionNamespace string) ([]fv1.Function, error) 
 	}
 
 	return funcs, nil
-}
-
-func (c *Client) FunctionPodLogs(m *metav1.ObjectMeta) (io.ReadCloser, int, error) {
-	relativeUrl := fmt.Sprintf("functions/%v", m.Name)
-	relativeUrl += fmt.Sprintf("?namespace=%v", m.Namespace)
-
-	queryURL, err := url.Parse(c.Url)
-	if err != nil {
-		return nil, 0, errors.Wrapf(err, "error parsing the base URL '%v'", c.Url)
-	}
-	queryURL.Path = fmt.Sprintf("/proxy/logs/%s", m.Name)
-
-	console.Verbose(2, fmt.Sprintf("Try to get pod logs from controller '%v'", queryURL.String()))
-
-	req, err := http.NewRequest(http.MethodPost, queryURL.String(), nil)
-	if err != nil {
-		return nil, 0, errors.Wrap(err, "error creating logs request")
-	}
-
-	httpClient := http.Client{}
-	resp, err := httpClient.Do(req)
-	if err != nil {
-		return nil, 0, errors.Wrap(err, "error executing get logs request")
-	}
-
-	return resp.Body, resp.StatusCode, nil
 }

@@ -14,11 +14,12 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-package client
+package v1
 
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/fission/fission/pkg/controller/client/rest"
 
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 
@@ -37,9 +38,17 @@ type (
 		Delete(m *metav1.ObjectMeta) error
 		List(triggerNamespace string) ([]fv1.HTTPTrigger, error)
 	}
+
+	HTTPTrigger struct {
+		client rest.Interface
+	}
 )
 
-func (c *Client) HTTPTriggerCreate(t *fv1.HTTPTrigger) (*metav1.ObjectMeta, error) {
+func newHTTPTriggerClient(c *V1Client) HTTPTriggerInterface {
+	return &HTTPTrigger{client:c.restClient}
+}
+
+func (c *HTTPTrigger) Create(t *fv1.HTTPTrigger) (*metav1.ObjectMeta, error) {
 	err := t.Validate()
 	if err != nil {
 		return nil, fv1.AggregateValidationErrors("HTTPTrigger", err)
@@ -50,13 +59,13 @@ func (c *Client) HTTPTriggerCreate(t *fv1.HTTPTrigger) (*metav1.ObjectMeta, erro
 		return nil, err
 	}
 
-	resp, err := c.create("triggers/http", "application/json", reqbody)
+	resp, err := c.client.Create("triggers/http", "application/json", reqbody)
 	if err != nil {
 		return nil, err
 	}
 	defer resp.Body.Close()
 
-	body, err := c.handleCreateResponse(resp)
+	body, err := handleCreateResponse(resp)
 	if err != nil {
 		return nil, err
 	}
@@ -70,17 +79,17 @@ func (c *Client) HTTPTriggerCreate(t *fv1.HTTPTrigger) (*metav1.ObjectMeta, erro
 	return &m, nil
 }
 
-func (c *Client) HTTPTriggerGet(m *metav1.ObjectMeta) (*fv1.HTTPTrigger, error) {
+func (c *HTTPTrigger) Get(m *metav1.ObjectMeta) (*fv1.HTTPTrigger, error) {
 	relativeUrl := fmt.Sprintf("triggers/http/%v", m.Name)
 	relativeUrl += fmt.Sprintf("?namespace=%v", m.Namespace)
 
-	resp, err := c.get(relativeUrl)
+	resp, err := c.client.Get(relativeUrl)
 	if err != nil {
 		return nil, err
 	}
 	defer resp.Body.Close()
 
-	body, err := c.handleResponse(resp)
+	body, err := handleResponse(resp)
 	if err != nil {
 		return nil, err
 	}
@@ -94,7 +103,7 @@ func (c *Client) HTTPTriggerGet(m *metav1.ObjectMeta) (*fv1.HTTPTrigger, error) 
 	return &t, nil
 }
 
-func (c *Client) HTTPTriggerUpdate(t *fv1.HTTPTrigger) (*metav1.ObjectMeta, error) {
+func (c *HTTPTrigger) Update(t *fv1.HTTPTrigger) (*metav1.ObjectMeta, error) {
 	err := t.Validate()
 	if err != nil {
 		return nil, fv1.AggregateValidationErrors("HTTPTrigger", err)
@@ -106,13 +115,13 @@ func (c *Client) HTTPTriggerUpdate(t *fv1.HTTPTrigger) (*metav1.ObjectMeta, erro
 	}
 	relativeUrl := fmt.Sprintf("triggers/http/%v", t.Metadata.Name)
 
-	resp, err := c.put(relativeUrl, "application/json", reqbody)
+	resp, err := c.client.Put(relativeUrl, "application/json", reqbody)
 	if err != nil {
 		return nil, err
 	}
 	defer resp.Body.Close()
 
-	body, err := c.handleResponse(resp)
+	body, err := handleResponse(resp)
 	if err != nil {
 		return nil, err
 	}
@@ -125,21 +134,21 @@ func (c *Client) HTTPTriggerUpdate(t *fv1.HTTPTrigger) (*metav1.ObjectMeta, erro
 	return &m, nil
 }
 
-func (c *Client) HTTPTriggerDelete(m *metav1.ObjectMeta) error {
+func (c *HTTPTrigger) Delete(m *metav1.ObjectMeta) error {
 	relativeUrl := fmt.Sprintf("triggers/http/%v", m.Name)
 	relativeUrl += fmt.Sprintf("?namespace=%v", m.Namespace)
-	return c.delete(relativeUrl)
+	return c.client.Delete(relativeUrl)
 }
 
-func (c *Client) HTTPTriggerList(triggerNamespace string) ([]fv1.HTTPTrigger, error) {
+func (c *HTTPTrigger) List(triggerNamespace string) ([]fv1.HTTPTrigger, error) {
 	relativeUrl := fmt.Sprintf("triggers/http?namespace=%v", triggerNamespace)
-	resp, err := c.get(relativeUrl)
+	resp, err := c.client.Get(relativeUrl)
 	if err != nil {
 		return nil, err
 	}
 	defer resp.Body.Close()
 
-	body, err := c.handleResponse(resp)
+	body, err := handleResponse(resp)
 	if err != nil {
 		return nil, err
 	}
