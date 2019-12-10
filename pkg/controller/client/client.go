@@ -28,7 +28,7 @@ type (
 	}
 
 	Clientset struct {
-		v1 *v1.V1Client
+		v1        *v1.V1Client
 		serverURL string
 	}
 )
@@ -36,7 +36,7 @@ type (
 func MakeClientset(serverURL string) Interface {
 	restC := rest.MakeRestClient(serverURL)
 	return &Clientset{
-		v1: v1.MakeV1Client(restC),
+		v1:        v1.MakeV1Client(restC),
 		serverURL: serverURL,
 	}
 }
