@@ -26,7 +26,7 @@ import (
 )
 
 type ShowSubCommand struct {
-	client *client.Client
+	client client.Interface
 }
 
 func Show(input cli.Input) error {

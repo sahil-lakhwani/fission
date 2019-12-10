@@ -44,7 +44,7 @@ const (
 )
 
 type CreateSubCommand struct {
-	client   *client.Client
+	client   client.Interface
 	function *fv1.Function
 	specFile string
 }
@@ -83,7 +83,7 @@ func (opts *CreateSubCommand) complete(input cli.Input) error {
 
 	if !toSpec {
 		// check for unique function names within a namespace
-		fn, err := opts.client.FunctionGet(&metav1.ObjectMeta{
+		fn, err := opts.client.V1().Function().Get(&metav1.ObjectMeta{
 			Name:      input.String(flagkey.FnName),
 			Namespace: input.String(flagkey.NamespaceFunction),
 		})
@@ -139,7 +139,7 @@ func (opts *CreateSubCommand) complete(input cli.Input) error {
 			pkgMetadata = &pkg.Metadata
 		} else {
 			// use existing package
-			pkg, err = opts.client.PackageGet(&metav1.ObjectMeta{
+			pkg, err = opts.client.V1().Package().Get(&metav1.ObjectMeta{
 				Namespace: fnNamespace,
 				Name:      pkgName,
 			})
@@ -181,7 +181,7 @@ func (opts *CreateSubCommand) complete(input cli.Input) error {
 					fnName, envName))
 			}
 		} else {
-			_, err := opts.client.EnvironmentGet(&metav1.ObjectMeta{
+			_, err := opts.client.V1().Environment().Get(&metav1.ObjectMeta{
 				Namespace: envNamespace,
 				Name:      envName,
 			})
@@ -227,7 +227,7 @@ func (opts *CreateSubCommand) complete(input cli.Input) error {
 		// check the referenced secret is in the same ns as the function, if not give a warning.
 		if !toSpec { // TODO: workaround in order not to block users from creating function spec, remove it.
 			for _, secretName := range secretNames {
-				_, err := opts.client.SecretGet(&metav1.ObjectMeta{
+				_, err := opts.client.V1().Misc().SecretGet(&metav1.ObjectMeta{
 					Namespace: fnNamespace,
 					Name:      secretName,
 				})
@@ -253,7 +253,7 @@ func (opts *CreateSubCommand) complete(input cli.Input) error {
 		// check the referenced cfgmap is in the same ns as the function, if not give a warning.
 		if !toSpec {
 			for _, cfgMapName := range cfgMapNames {
-				_, err := opts.client.ConfigMapGet(&metav1.ObjectMeta{
+				_, err := opts.client.V1().Misc().ConfigMapGet(&metav1.ObjectMeta{
 					Namespace: fnNamespace,
 					Name:      cfgMapName,
 				})
@@ -316,7 +316,7 @@ func (opts *CreateSubCommand) run(input cli.Input) error {
 		return nil
 	}
 
-	_, err := opts.client.FunctionCreate(opts.function)
+	_, err := opts.client.V1().Function().Create(opts.function)
 	if err != nil {
 		return errors.Wrap(err, "error creating function")
 	}
@@ -352,7 +352,7 @@ func (opts *CreateSubCommand) run(input cli.Input) error {
 			},
 		},
 	}
-	_, err = opts.client.HTTPTriggerCreate(ht)
+	_, err = opts.client.V1().HTTPTrigger().Create(ht)
 	if err != nil {
 		return errors.Wrap(err, "error creating HTTP trigger")
 	}

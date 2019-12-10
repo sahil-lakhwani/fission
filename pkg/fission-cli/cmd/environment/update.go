@@ -32,7 +32,7 @@ import (
 )
 
 type UpdateSubCommand struct {
-	client *client.Client
+	client client.Interface
 	env    *fv1.Environment
 }
 
@@ -56,7 +56,7 @@ func (opts *UpdateSubCommand) do(input cli.Input) error {
 }
 
 func (opts *UpdateSubCommand) complete(input cli.Input) error {
-	env, err := opts.client.EnvironmentGet(&metav1.ObjectMeta{
+	env, err := opts.client.V1().Environment().Get(&metav1.ObjectMeta{
 		Name:      input.String(flagkey.EnvName),
 		Namespace: input.String(flagkey.NamespaceEnvironment),
 	})
@@ -74,7 +74,7 @@ func (opts *UpdateSubCommand) complete(input cli.Input) error {
 }
 
 func (opts *UpdateSubCommand) run(input cli.Input) error {
-	_, err := opts.client.EnvironmentUpdate(opts.env)
+	_, err := opts.client.V1().Environment().Update(opts.env)
 	if err != nil {
 		return errors.Wrap(err, "error updating environment")
 	}

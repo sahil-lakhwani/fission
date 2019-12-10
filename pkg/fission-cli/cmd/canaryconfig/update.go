@@ -31,7 +31,7 @@ import (
 )
 
 type UpdateSubCommand struct {
-	client *client.Client
+	client client.Interface
 	canary *fv1.CanaryConfig
 }
 
@@ -68,7 +68,7 @@ func (opts *UpdateSubCommand) complete(input cli.Input) error {
 		return errors.Wrap(err, "error parsing time duration")
 	}
 
-	canaryCfg, err := opts.client.CanaryConfigGet(&metav1.ObjectMeta{
+	canaryCfg, err := opts.client.V1().CanaryConfig().Get(&metav1.ObjectMeta{
 		Name:      name,
 		Namespace: ns,
 	})
@@ -100,7 +100,7 @@ func (opts *UpdateSubCommand) complete(input cli.Input) error {
 }
 
 func (opts *UpdateSubCommand) run(input cli.Input) error {
-	_, err := opts.client.CanaryConfigUpdate(opts.canary)
+	_, err := opts.client.V1().CanaryConfig().Update(opts.canary)
 	if err != nil {
 		return errors.Wrap(err, "error updating canary config")
 	}

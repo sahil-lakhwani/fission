@@ -32,7 +32,7 @@ import (
 )
 
 type UpdateSubCommand struct {
-	client       *client.Client
+	client       client.Interface
 	pkgName      string
 	pkgNamespace string
 	force        bool
@@ -65,7 +65,7 @@ func (opts *UpdateSubCommand) complete(input cli.Input) error {
 }
 
 func (opts *UpdateSubCommand) run(input cli.Input) error {
-	pkg, err := opts.client.PackageGet(&metav1.ObjectMeta{
+	pkg, err := opts.client.V1().Package().Get(&metav1.ObjectMeta{
 		Namespace: opts.pkgNamespace,
 		Name:      opts.pkgName,
 	})
@@ -99,7 +99,7 @@ func (opts *UpdateSubCommand) run(input cli.Input) error {
 	return nil
 }
 
-func UpdatePackage(input cli.Input, client *client.Client, pkg *fv1.Package) (*metav1.ObjectMeta, error) {
+func UpdatePackage(input cli.Input, client client.Interface, pkg *fv1.Package) (*metav1.ObjectMeta, error) {
 	envName := input.String(flagkey.PkgEnvironment)
 	envNamespace := input.String(flagkey.NamespaceEnvironment)
 	srcArchiveFiles := input.StringSlice(flagkey.PkgSrcArchive)
@@ -185,7 +185,7 @@ func UpdatePackage(input cli.Input, client *client.Client, pkg *fv1.Package) (*m
 		}
 	}
 
-	newPkgMeta, err := client.PackageUpdate(pkg)
+	newPkgMeta, err := client.V1().Package().Update(pkg)
 	if err != nil {
 		return nil, errors.Wrap(err, "update package")
 	}
@@ -195,13 +195,13 @@ func UpdatePackage(input cli.Input, client *client.Client, pkg *fv1.Package) (*m
 	return newPkgMeta, err
 }
 
-func UpdateFunctionPackageResourceVersion(client *client.Client, pkgMeta *metav1.ObjectMeta, fnList ...fv1.Function) error {
+func UpdateFunctionPackageResourceVersion(client client.Interface, pkgMeta *metav1.ObjectMeta, fnList ...fv1.Function) error {
 	errs := &multierror.Error{}
 
 	// update resource version of package reference of functions that shared the same package
 	for _, fn := range fnList {
 		fn.Spec.Package.PackageRef.ResourceVersion = pkgMeta.ResourceVersion
-		_, err := client.FunctionUpdate(&fn)
+		_, err := client.V1().Function().Update(&fn)
 		if err != nil {
 			errs = multierror.Append(errs, errors.Wrapf(err, "error updating package resource version of function '%v'", fn.Metadata.Name))
 		}
@@ -210,14 +210,14 @@ func UpdateFunctionPackageResourceVersion(client *client.Client, pkgMeta *metav1
 	return errs.ErrorOrNil()
 }
 
-func updatePackageStatus(client *client.Client, pkg *fv1.Package, status fv1.BuildStatus) (*metav1.ObjectMeta, error) {
+func updatePackageStatus(client client.Interface, pkg *fv1.Package, status fv1.BuildStatus) (*metav1.ObjectMeta, error) {
 	switch status {
 	case fv1.BuildStatusNone, fv1.BuildStatusPending, fv1.BuildStatusRunning, fv1.BuildStatusSucceeded, fv1.CanaryConfigStatusAborted:
 		pkg.Status = fv1.PackageStatus{
 			BuildStatus:         status,
 			LastUpdateTimestamp: time.Now().UTC(),
 		}
-		pkg, err := client.PackageUpdate(pkg)
+		pkg, err := client.V1().Package().Update(pkg)
 		return pkg, err
 	}
 	return nil, errors.New("unknown package status")

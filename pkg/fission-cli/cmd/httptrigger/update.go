@@ -31,7 +31,7 @@ import (
 )
 
 type UpdateSubCommand struct {
-	client  *client.Client
+	client  client.Interface
 	trigger *fv1.HTTPTrigger
 }
 
@@ -58,7 +58,7 @@ func (opts *UpdateSubCommand) complete(input cli.Input) error {
 	htName := input.String(flagkey.HtName)
 	triggerNamespace := input.String(flagkey.NamespaceTrigger)
 
-	ht, err := opts.client.HTTPTriggerGet(&metav1.ObjectMeta{
+	ht, err := opts.client.V1().HTTPTrigger().Get(&metav1.ObjectMeta{
 		Name:      htName,
 		Namespace: triggerNamespace,
 	})
@@ -120,7 +120,7 @@ func (opts *UpdateSubCommand) complete(input cli.Input) error {
 }
 
 func (opts *UpdateSubCommand) run(input cli.Input) error {
-	_, err := opts.client.HTTPTriggerUpdate(opts.trigger)
+	_, err := opts.client.V1().HTTPTrigger().Update(opts.trigger)
 	if err != nil {
 		return errors.Wrap(err, "error updating the HTTP trigger")
 	}

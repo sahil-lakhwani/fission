@@ -35,7 +35,7 @@ import (
 )
 
 type CreateSubCommand struct {
-	client  *client.Client
+	client  client.Interface
 	trigger *fv1.TimeTrigger
 }
 
@@ -126,7 +126,7 @@ func (opts *CreateSubCommand) run(input cli.Input) error {
 		return nil
 	}
 
-	_, err := opts.client.TimeTriggerCreate(opts.trigger)
+	_, err := opts.client.V1().TimeTrigger().Create(opts.trigger)
 	if err != nil {
 		return errors.Wrap(err, "error creating Time trigger")
 	}
@@ -146,8 +146,8 @@ func (opts *CreateSubCommand) run(input cli.Input) error {
 	return nil
 }
 
-func getAPITimeInfo(client *client.Client) (time.Time, error) {
-	serverInfo, err := client.ServerInfo()
+func getAPITimeInfo(client client.Interface) (time.Time, error) {
+	serverInfo, err := client.V1().Misc().ServerInfo()
 	if err != nil {
 		return time.Time{}, errors.Errorf("Error syncing server time information: %v", err)
 	}

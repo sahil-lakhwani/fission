@@ -29,7 +29,7 @@ import (
 )
 
 type ListSubCommand struct {
-	client *client.Client
+	client client.Interface
 }
 
 func List(input cli.Input) error {
@@ -45,7 +45,7 @@ func List(input cli.Input) error {
 
 func (opts *ListSubCommand) do(input cli.Input) error {
 	ttNs := input.String(flagkey.NamespaceTrigger)
-	tts, err := opts.client.TimeTriggerList(ttNs)
+	tts, err := opts.client.V1().TimeTrigger().List(ttNs)
 	if err != nil {
 		return errors.Wrap(err, "list Time triggers")
 	}

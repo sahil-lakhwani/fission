@@ -29,7 +29,7 @@ import (
 )
 
 type DeleteSubCommand struct {
-	client        *client.Client
+	client        client.Interface
 	name          string
 	namespace     string
 	deleteOrphans bool
@@ -70,7 +70,7 @@ func (opts *DeleteSubCommand) complete(input cli.Input) error {
 
 func (opts *DeleteSubCommand) run(input cli.Input) error {
 	if len(opts.name) != 0 {
-		_, err := opts.client.PackageGet(&metav1.ObjectMeta{
+		_, err := opts.client.V1().Package().Get(&metav1.ObjectMeta{
 			Namespace: opts.namespace,
 			Name:      opts.name,
 		})
@@ -105,8 +105,8 @@ func (opts *DeleteSubCommand) run(input cli.Input) error {
 	return nil
 }
 
-func deleteOrphanPkgs(client *client.Client, pkgNamespace string) error {
-	pkgList, err := client.PackageList(pkgNamespace)
+func deleteOrphanPkgs(client client.Interface, pkgNamespace string) error {
+	pkgList, err := client.V1().Package().List(pkgNamespace)
 	if err != nil {
 		return err
 	}
@@ -127,8 +127,8 @@ func deleteOrphanPkgs(client *client.Client, pkgNamespace string) error {
 	return nil
 }
 
-func deletePackage(client *client.Client, pkgName string, pkgNamespace string) error {
-	return client.PackageDelete(&metav1.ObjectMeta{
+func deletePackage(client client.Interface, pkgName string, pkgNamespace string) error {
+	return client.V1().Package().Delete(&metav1.ObjectMeta{
 		Namespace: pkgNamespace,
 		Name:      pkgName,
 	})

@@ -37,7 +37,7 @@ const (
 )
 
 type GetSubCommand struct {
-	client      *client.Client
+	client      client.Interface
 	name        string
 	namespace   string
 	output      string
@@ -84,7 +84,7 @@ func (opts *GetSubCommand) complete(input cli.Input) error {
 }
 
 func (opts *GetSubCommand) run(input cli.Input) error {
-	pkg, err := opts.client.PackageGet(&metav1.ObjectMeta{
+	pkg, err := opts.client.V1().Package().Get(&metav1.ObjectMeta{
 		Namespace: opts.namespace,
 		Name:      opts.name,
 	})

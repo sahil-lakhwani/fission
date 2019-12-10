@@ -33,7 +33,7 @@ import (
 )
 
 type UpdateSubCommand struct {
-	client   *client.Client
+	client   client.Interface
 	function *fv1.Function
 }
 
@@ -60,7 +60,7 @@ func (opts *UpdateSubCommand) complete(input cli.Input) error {
 	fnName := input.String(flagkey.FnName)
 	fnNamespace := input.String(flagkey.NamespaceFunction)
 
-	function, err := opts.client.FunctionGet(&metav1.ObjectMeta{
+	function, err := opts.client.V1().Function().Get(&metav1.ObjectMeta{
 		Name:      input.String(flagkey.FnName),
 		Namespace: input.String(flagkey.NamespaceFunction),
 	})
@@ -94,7 +94,7 @@ func (opts *UpdateSubCommand) complete(input cli.Input) error {
 
 		// check that the referenced secret is in the same ns as the function, if not give a warning.
 		for _, secretName := range secretNames {
-			_, err := opts.client.SecretGet(&metav1.ObjectMeta{
+			_, err := opts.client.V1().Misc().SecretGet(&metav1.ObjectMeta{
 				Namespace: fnNamespace,
 				Name:      secretName,
 			})
@@ -118,7 +118,7 @@ func (opts *UpdateSubCommand) complete(input cli.Input) error {
 
 		// check that the referenced cfgmap is in the same ns as the function, if not give a warning.
 		for _, cfgMapName := range cfgMapNames {
-			_, err := opts.client.ConfigMapGet(&metav1.ObjectMeta{
+			_, err := opts.client.V1().Misc().ConfigMapGet(&metav1.ObjectMeta{
 				Namespace: fnNamespace,
 				Name:      cfgMapName,
 			})
@@ -174,7 +174,7 @@ func (opts *UpdateSubCommand) complete(input cli.Input) error {
 
 	function.Spec.Resources = *resReqs
 
-	pkg, err := opts.client.PackageGet(&metav1.ObjectMeta{
+	pkg, err := opts.client.V1().Package().Get(&metav1.ObjectMeta{
 		Namespace: fnNamespace,
 		Name:      pkgName,
 	})
@@ -238,7 +238,7 @@ func (opts *UpdateSubCommand) complete(input cli.Input) error {
 }
 
 func (opts *UpdateSubCommand) run(input cli.Input) error {
-	_, err := opts.client.FunctionUpdate(opts.function)
+	_, err := opts.client.V1().Function().Update(opts.function)
 	if err != nil {
 		return errors.Wrap(err, "error updating function")
 	}

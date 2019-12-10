@@ -31,7 +31,7 @@ import (
 )
 
 type GetSubCommand struct {
-	client *client.Client
+	client client.Interface
 }
 
 func Get(input cli.Input) error {
@@ -51,7 +51,7 @@ func (opts *GetSubCommand) do(input cli.Input) error {
 		Namespace: input.String(flagkey.NamespaceEnvironment),
 	}
 
-	env, err := opts.client.EnvironmentGet(m)
+	env, err := opts.client.V1().Environment().Get(m)
 	if err != nil {
 		return errors.Wrap(err, "error getting environment")
 	}

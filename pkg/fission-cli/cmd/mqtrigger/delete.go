@@ -29,7 +29,7 @@ import (
 )
 
 type DeleteSubCommand struct {
-	client   *client.Client
+	client   client.Interface
 	metadata *metav1.ObjectMeta
 }
 
@@ -61,7 +61,7 @@ func (opts *DeleteSubCommand) complete(input cli.Input) error {
 }
 
 func (opts *DeleteSubCommand) run(input cli.Input) error {
-	err := opts.client.MessageQueueTriggerDelete(opts.metadata)
+	err := opts.client.V1().MessageQueueTrigger().Delete(opts.metadata)
 	if err != nil {
 		return errors.Wrap(err, "error deleting message queue trigger")
 	}

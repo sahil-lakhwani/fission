@@ -37,7 +37,7 @@ import (
 )
 
 type CreateSubCommand struct {
-	client *client.Client
+	client client.Interface
 }
 
 func Create(input cli.Input) error {
@@ -121,7 +121,7 @@ func (opts *CreateSubCommand) run(input cli.Input) error {
 }
 
 // TODO: get all necessary value from CLI input directly
-func CreatePackage(input cli.Input, client *client.Client, pkgName string, pkgNamespace string, envName string, envNamespace string,
+func CreatePackage(input cli.Input, client client.Interface, pkgName string, pkgNamespace string, envName string, envNamespace string,
 	srcArchiveFiles []string, deployArchiveFiles []string, buildcmd string, specDir string, specFile string, noZip bool) (*metav1.ObjectMeta, error) {
 
 	insecure := input.Bool(flagkey.PkgInsecure)
@@ -201,7 +201,7 @@ func CreatePackage(input cli.Input, client *client.Client, pkgName string, pkgNa
 		}
 		return &pkg.Metadata, nil
 	} else {
-		pkgMetadata, err := client.PackageCreate(pkg)
+		pkgMetadata, err := client.V1().Package().Create(pkg)
 		if err != nil {
 			return nil, errors.Wrap(err, "error creating package")
 		}

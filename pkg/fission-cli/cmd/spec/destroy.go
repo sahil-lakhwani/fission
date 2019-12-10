@@ -25,7 +25,7 @@ import (
 )
 
 type DestroySubCommand struct {
-	client *client.Client
+	client client.Interface
 }
 
 // Destroy destroys everything in the spec.

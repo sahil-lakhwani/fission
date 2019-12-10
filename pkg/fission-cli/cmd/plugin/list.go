@@ -28,7 +28,7 @@ import (
 )
 
 type ListSubCommand struct {
-	client *client.Client
+	client client.Interface
 }
 
 func List(input cli.Input) error {

@@ -32,7 +32,7 @@ import (
 )
 
 type CreateSubCommand struct {
-	client *client.Client
+	client client.Interface
 	canary *fv1.CanaryConfig
 }
 
@@ -74,7 +74,7 @@ func (opts *CreateSubCommand) complete(input cli.Input) error {
 	}
 
 	// check that the trigger exists in the same namespace.
-	htTrigger, err := opts.client.HTTPTriggerGet(&metav1.ObjectMeta{
+	htTrigger, err := opts.client.V1().HTTPTrigger().Get(&metav1.ObjectMeta{
 		Name:      ht,
 		Namespace: fnNs,
 	})
@@ -129,7 +129,7 @@ func (opts *CreateSubCommand) complete(input cli.Input) error {
 }
 
 func (opts *CreateSubCommand) run(input cli.Input) error {
-	_, err := opts.client.CanaryConfigCreate(opts.canary)
+	_, err := opts.client.V1().CanaryConfig().Create(opts.canary)
 	if err != nil {
 		return errors.Wrap(err, "error creating canary config")
 	}

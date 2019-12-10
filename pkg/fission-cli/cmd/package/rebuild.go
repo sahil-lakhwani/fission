@@ -30,7 +30,7 @@ import (
 )
 
 type RebuildSubCommand struct {
-	client    *client.Client
+	client    client.Interface
 	name      string
 	namespace string
 }
@@ -61,7 +61,7 @@ func (opts *RebuildSubCommand) complete(input cli.Input) error {
 }
 
 func (opts *RebuildSubCommand) run(input cli.Input) error {
-	pkg, err := opts.client.PackageGet(&metav1.ObjectMeta{
+	pkg, err := opts.client.V1().Package().Get(&metav1.ObjectMeta{
 		Name:      opts.name,
 		Namespace: opts.namespace,
 	})

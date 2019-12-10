@@ -30,7 +30,7 @@ import (
 )
 
 type ListSubCommand struct {
-	client    *client.Client
+	client    client.Interface
 	namespace string
 }
 
@@ -59,7 +59,7 @@ func (opts *ListSubCommand) complete(input cli.Input) error {
 }
 
 func (opts *ListSubCommand) run(input cli.Input) error {
-	mqts, err := opts.client.MessageQueueTriggerList(input.String(flagkey.MqtMQType), opts.namespace)
+	mqts, err := opts.client.V1().MessageQueueTrigger().List(input.String(flagkey.MqtMQType), opts.namespace)
 	if err != nil {
 		return errors.Wrap(err, "error listing message queue triggers")
 	}

@@ -34,7 +34,7 @@ import (
 )
 
 type InitSubCommand struct {
-	client       *client.Client
+	client       client.Interface
 	deployConfig *spectypes.DeploymentConfig
 }
 

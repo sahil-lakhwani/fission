@@ -33,7 +33,7 @@ import (
 )
 
 type ValidateSubCommand struct {
-	client *client.Client
+	client client.Interface
 }
 
 // Validate parses a set of specs and checks for references to

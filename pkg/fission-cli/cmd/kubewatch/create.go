@@ -33,7 +33,7 @@ import (
 )
 
 type CreateSubCommand struct {
-	client  *client.Client
+	client  client.Interface
 	watcher *fv1.KubernetesWatchTrigger
 }
 
@@ -119,7 +119,7 @@ func (opts *CreateSubCommand) run(input cli.Input) error {
 		return nil
 	}
 
-	_, err := opts.client.WatchCreate(opts.watcher)
+	_, err := opts.client.V1().KubeWatcher().Create(opts.watcher)
 	if err != nil {
 		return errors.Wrap(err, "error creating kubewatch")
 	}

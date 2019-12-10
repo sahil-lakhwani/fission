@@ -37,7 +37,7 @@ import (
 )
 
 type TestSubCommand struct {
-	client *client.Client
+	client client.Interface
 }
 
 func Test(input cli.Input) error {
@@ -164,8 +164,8 @@ func doHTTPRequest(ctx context.Context, url string, headers []string, method, bo
 	return resp, nil
 }
 
-func printPodLogs(client *client.Client, fnMeta *metav1.ObjectMeta) (string, error) {
-	reader, statusCode, err := client.FunctionPodLogs(fnMeta)
+func printPodLogs(client client.Interface, fnMeta *metav1.ObjectMeta) (string, error) {
+	reader, statusCode, err := client.V1().Misc().PodLogs(fnMeta)
 	if err != nil {
 		return "", errors.Wrap(err, "error executing get logs request")
 	}

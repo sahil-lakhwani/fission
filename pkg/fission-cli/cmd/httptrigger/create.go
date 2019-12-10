@@ -36,7 +36,7 @@ import (
 )
 
 type CreateSubCommand struct {
-	client  *client.Client
+	client  client.Interface
 	trigger *fv1.HTTPTrigger
 }
 
@@ -85,7 +85,7 @@ func (opts *CreateSubCommand) complete(input cli.Input) error {
 		Namespace: fnNamespace,
 	}
 
-	htTrigger, err := opts.client.HTTPTriggerGet(m)
+	htTrigger, err := opts.client.V1().HTTPTrigger().Get(m)
 	if err != nil && !ferror.IsNotFound(err) {
 		return err
 	}
@@ -173,7 +173,7 @@ func (opts *CreateSubCommand) run(input cli.Input) error {
 		return nil
 	}
 
-	_, err := opts.client.HTTPTriggerCreate(opts.trigger)
+	_, err := opts.client.V1().HTTPTrigger().Create(opts.trigger)
 	if err != nil {
 		return errors.Wrap(err, "create HTTP trigger")
 	}

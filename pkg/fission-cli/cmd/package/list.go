@@ -32,7 +32,7 @@ import (
 )
 
 type ListSubCommand struct {
-	client       *client.Client
+	client       client.Interface
 	listOrphans  bool
 	status       string
 	pkgNamespace string
@@ -66,7 +66,7 @@ func (opts *ListSubCommand) complete(input cli.Input) error {
 }
 
 func (opts *ListSubCommand) run(input cli.Input) error {
-	pkgList, err := opts.client.PackageList(opts.pkgNamespace)
+	pkgList, err := opts.client.V1().Package().List(opts.pkgNamespace)
 	if err != nil {
 		return err
 	}

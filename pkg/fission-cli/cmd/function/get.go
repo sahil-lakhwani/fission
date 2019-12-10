@@ -29,7 +29,7 @@ import (
 )
 
 type GetSubCommand struct {
-	client *client.Client
+	client client.Interface
 }
 
 func Get(input cli.Input) error {
@@ -44,7 +44,7 @@ func Get(input cli.Input) error {
 }
 
 func (opts *GetSubCommand) do(input cli.Input) error {
-	fn, err := opts.client.FunctionGet(&metav1.ObjectMeta{
+	fn, err := opts.client.V1().Function().Get(&metav1.ObjectMeta{
 		Name:      input.String(flagkey.FnName),
 		Namespace: input.String(flagkey.NamespaceFunction),
 	})
@@ -52,7 +52,7 @@ func (opts *GetSubCommand) do(input cli.Input) error {
 		return errors.Wrap(err, "error getting function")
 	}
 
-	pkg, err := opts.client.PackageGet(&metav1.ObjectMeta{
+	pkg, err := opts.client.V1().Package().Get(&metav1.ObjectMeta{
 		Name:      fn.Spec.Package.PackageRef.Name,
 		Namespace: fn.Spec.Package.PackageRef.Namespace,
 	})

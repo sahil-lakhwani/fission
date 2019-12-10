@@ -24,20 +24,27 @@ import (
 type (
 	Interface interface {
 		V1() v1.V1Interface
+		ServerURL() string
 	}
 
 	Clientset struct {
 		v1 *v1.V1Client
+		serverURL string
 	}
 )
 
-func MakeClientset(serverUrl string) Interface {
-	restC := rest.MakeRestClient(serverUrl)
+func MakeClientset(serverURL string) Interface {
+	restC := rest.MakeRestClient(serverURL)
 	return &Clientset{
 		v1: v1.MakeV1Client(restC),
+		serverURL: serverURL,
 	}
 }
 
 func (c *Clientset) V1() v1.V1Interface {
 	return c.v1
+}
+
+func (c *Clientset) ServerURL() string {
+	return c.serverURL
 }

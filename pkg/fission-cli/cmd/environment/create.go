@@ -34,7 +34,7 @@ import (
 )
 
 type CreateSubCommand struct {
-	client *client.Client
+	client client.Interface
 	env    *fv1.Environment
 }
 
@@ -72,7 +72,7 @@ func (opts *CreateSubCommand) complete(input cli.Input) error {
 func (opts *CreateSubCommand) run(input cli.Input) error {
 	m := opts.env.Metadata
 
-	envList, err := opts.client.EnvironmentList(m.Namespace)
+	envList, err := opts.client.V1().Environment().List(m.Namespace)
 	if err != nil {
 		return err
 	} else if len(envList) > 0 {
@@ -92,7 +92,7 @@ func (opts *CreateSubCommand) run(input cli.Input) error {
 		return nil
 	}
 
-	_, err = opts.client.EnvironmentCreate(opts.env)
+	_, err = opts.client.V1().Environment().Create(opts.env)
 	if err != nil {
 		return errors.Wrap(err, "error creating environment")
 	}

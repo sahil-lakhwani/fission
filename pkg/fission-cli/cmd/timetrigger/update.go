@@ -30,7 +30,7 @@ import (
 )
 
 type UpdateSubCommand struct {
-	client  *client.Client
+	client  client.Interface
 	trigger *fv1.TimeTrigger
 }
 
@@ -54,7 +54,7 @@ func (opts *UpdateSubCommand) do(input cli.Input) error {
 }
 
 func (opts *UpdateSubCommand) complete(input cli.Input) error {
-	tt, err := opts.client.TimeTriggerGet(&metav1.ObjectMeta{
+	tt, err := opts.client.V1().TimeTrigger().Get(&metav1.ObjectMeta{
 		Name:      input.String(flagkey.TtName),
 		Namespace: input.String(flagkey.NamespaceTrigger),
 	})
@@ -88,7 +88,7 @@ func (opts *UpdateSubCommand) complete(input cli.Input) error {
 }
 
 func (opts *UpdateSubCommand) run(input cli.Input) error {
-	_, err := opts.client.TimeTriggerUpdate(opts.trigger)
+	_, err := opts.client.V1().TimeTrigger().Update(opts.trigger)
 	if err != nil {
 		return errors.Wrap(err, "error updating Time trigger")
 	}

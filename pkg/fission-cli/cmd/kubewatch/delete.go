@@ -29,7 +29,7 @@ import (
 )
 
 type DeleteSubCommand struct {
-	client    *client.Client
+	client    client.Interface
 	name      string
 	namespace string
 }
@@ -60,7 +60,7 @@ func (opts *DeleteSubCommand) complete(input cli.Input) error {
 }
 
 func (opts *DeleteSubCommand) run(input cli.Input) error {
-	err := opts.client.WatchDelete(&metav1.ObjectMeta{
+	err := opts.client.V1().KubeWatcher().Delete(&metav1.ObjectMeta{
 		Name:      opts.name,
 		Namespace: opts.namespace,
 	})

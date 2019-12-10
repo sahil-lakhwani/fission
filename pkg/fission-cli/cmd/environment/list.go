@@ -30,7 +30,7 @@ import (
 )
 
 type ListSubCommand struct {
-	client *client.Client
+	client client.Interface
 }
 
 func List(input cli.Input) error {
@@ -45,7 +45,7 @@ func List(input cli.Input) error {
 }
 
 func (opts *ListSubCommand) do(input cli.Input) error {
-	envs, err := opts.client.EnvironmentList(input.String(flagkey.NamespaceEnvironment))
+	envs, err := opts.client.V1().Environment().List(input.String(flagkey.NamespaceEnvironment))
 	if err != nil {
 		return errors.Wrap(err, "error listing environments")
 	}

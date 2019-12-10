@@ -28,7 +28,7 @@ import (
 )
 
 type VersionSubCommand struct {
-	client *client.Client
+	client client.Interface
 }
 
 func Version(input cli.Input) error {

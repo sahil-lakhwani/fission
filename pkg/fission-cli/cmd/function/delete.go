@@ -29,7 +29,7 @@ import (
 )
 
 type DeleteSubCommand struct {
-	client *client.Client
+	client client.Interface
 }
 
 func Delete(input cli.Input) error {
@@ -49,7 +49,7 @@ func (opts *DeleteSubCommand) do(input cli.Input) error {
 		Namespace: input.String(flagkey.NamespaceFunction),
 	}
 
-	err := opts.client.FunctionDelete(m)
+	err := opts.client.V1().Function().Delete(m)
 	if err != nil {
 		return errors.Wrap(err, fmt.Sprintf("delete function '%v'", m.Name))
 	}

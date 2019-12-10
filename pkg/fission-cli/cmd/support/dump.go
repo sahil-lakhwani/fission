@@ -39,7 +39,7 @@ const (
 )
 
 type DumpSubCommand struct {
-	client *client.Client
+	client client.Interface
 }
 
 func Dump(input cli.Input) error {

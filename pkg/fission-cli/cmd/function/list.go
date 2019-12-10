@@ -31,7 +31,7 @@ import (
 )
 
 type ListSubCommand struct {
-	client *client.Client
+	client client.Interface
 }
 
 func List(input cli.Input) error {
@@ -48,7 +48,7 @@ func List(input cli.Input) error {
 func (opts *ListSubCommand) do(input cli.Input) error {
 	ns := input.String(flagkey.NamespaceFunction)
 
-	fns, err := opts.client.FunctionList(ns)
+	fns, err := opts.client.V1().Function().List(ns)
 	if err != nil {
 		return errors.Wrap(err, "error listing functions")
 	}

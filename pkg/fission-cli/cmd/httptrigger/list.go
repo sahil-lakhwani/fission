@@ -27,7 +27,7 @@ import (
 )
 
 type ListSubCommand struct {
-	client *client.Client
+	client client.Interface
 }
 
 func List(input cli.Input) error {
@@ -46,7 +46,7 @@ func (opts *ListSubCommand) do(input cli.Input) error {
 }
 
 func (opts *ListSubCommand) run(input cli.Input) error {
-	hts, err := opts.client.HTTPTriggerList(input.String(flagkey.NamespaceTrigger))
+	hts, err := opts.client.V1().HTTPTrigger().List(input.String(flagkey.NamespaceTrigger))
 	if err != nil {
 		return errors.Wrap(err, "error listing HTTP triggers")
 	}

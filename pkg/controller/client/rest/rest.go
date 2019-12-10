@@ -2,13 +2,14 @@ package rest
 
 import (
 	"bytes"
-	"github.com/pkg/errors"
-	"golang.org/x/net/context/ctxhttp"
+	"context"
 	"io"
 	"io/ioutil"
-	"k8s.io/client-go/rest"
 	"net/http"
 	"strings"
+
+	"github.com/pkg/errors"
+	"golang.org/x/net/context/ctxhttp"
 )
 
 type (

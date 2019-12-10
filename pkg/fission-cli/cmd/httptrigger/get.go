@@ -33,7 +33,7 @@ import (
 )
 
 type GetSubCommand struct {
-	client *client.Client
+	client client.Interface
 }
 
 func Get(input cli.Input) error {
@@ -56,7 +56,7 @@ func (opts *GetSubCommand) run(input cli.Input) error {
 		Name:      input.String(flagkey.HtName),
 		Namespace: input.String(flagkey.NamespaceFunction),
 	}
-	ht, err := opts.client.HTTPTriggerGet(m)
+	ht, err := opts.client.V1().HTTPTrigger().Get(m)
 	if err != nil {
 		return errors.Wrap(err, "error getting http trigger")
 	}

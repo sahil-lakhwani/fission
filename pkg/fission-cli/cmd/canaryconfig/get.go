@@ -31,7 +31,7 @@ import (
 )
 
 type GetSubCommand struct {
-	client *client.Client
+	client client.Interface
 }
 
 func Get(input cli.Input) error {
@@ -46,7 +46,7 @@ func Get(input cli.Input) error {
 }
 
 func (opts *GetSubCommand) run(input cli.Input) error {
-	canaryCfg, err := opts.client.CanaryConfigGet(&metav1.ObjectMeta{
+	canaryCfg, err := opts.client.V1().CanaryConfig().Get(&metav1.ObjectMeta{
 		Name:      input.String(flagkey.CanaryName),
 		Namespace: input.String(flagkey.NamespaceCanary),
 	})

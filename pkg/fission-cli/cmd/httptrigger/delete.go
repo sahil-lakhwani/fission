@@ -31,7 +31,7 @@ import (
 )
 
 type DeleteSubCommand struct {
-	client       *client.Client
+	client       client.Interface
 	triggerName  string
 	functionName string
 	namespace    string
@@ -69,7 +69,7 @@ func (opts *DeleteSubCommand) complete(input cli.Input) error {
 }
 
 func (opts *DeleteSubCommand) run(input cli.Input) error {
-	triggers, err := opts.client.HTTPTriggerList(opts.namespace)
+	triggers, err := opts.client.V1().HTTPTrigger().List(opts.namespace)
 	if err != nil {
 		return errors.Wrap(err, "error getting HTTP trigger list")
 	}
@@ -90,7 +90,7 @@ func (opts *DeleteSubCommand) run(input cli.Input) error {
 	errs := utils.MultiErrorWithFormat()
 
 	for _, name := range triggersToDelete {
-		err := opts.client.HTTPTriggerDelete(&metav1.ObjectMeta{
+		err := opts.client.V1().HTTPTrigger().Delete(&metav1.ObjectMeta{
 			Name:      name,
 			Namespace: opts.namespace,
 		})

@@ -31,7 +31,7 @@ import (
 )
 
 type GetMetaSubCommand struct {
-	client *client.Client
+	client client.Interface
 }
 
 func GetMeta(input cli.Input) error {
@@ -46,7 +46,7 @@ func GetMeta(input cli.Input) error {
 }
 
 func (opts *GetMetaSubCommand) do(input cli.Input) error {
-	fn, err := opts.client.FunctionGet(&metav1.ObjectMeta{
+	fn, err := opts.client.V1().Function().Get(&metav1.ObjectMeta{
 		Name:      input.String(flagkey.FnName),
 		Namespace: input.String(flagkey.NamespaceFunction),
 	})

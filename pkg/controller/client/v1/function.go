@@ -19,16 +19,11 @@ package v1
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/fission/fission/pkg/controller/client/rest"
-	"io"
-	"net/http"
-	"net/url"
 
-	"github.com/pkg/errors"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 
 	fv1 "github.com/fission/fission/pkg/apis/fission.io/v1"
-	"github.com/fission/fission/pkg/fission-cli/console"
+	"github.com/fission/fission/pkg/controller/client/rest"
 )
 
 type (

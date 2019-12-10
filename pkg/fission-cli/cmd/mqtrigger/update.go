@@ -30,7 +30,7 @@ import (
 )
 
 type UpdateSubCommand struct {
-	client  *client.Client
+	client  client.Interface
 	trigger *fv1.MessageQueueTrigger
 }
 
@@ -54,7 +54,7 @@ func (opts *UpdateSubCommand) do(input cli.Input) error {
 }
 
 func (opts *UpdateSubCommand) complete(input cli.Input) error {
-	mqt, err := opts.client.MessageQueueTriggerGet(&metav1.ObjectMeta{
+	mqt, err := opts.client.V1().MessageQueueTrigger().Get(&metav1.ObjectMeta{
 		Name:      input.String(flagkey.MqtName),
 		Namespace: input.String(flagkey.NamespaceTrigger),
 	})
@@ -111,7 +111,7 @@ func (opts *UpdateSubCommand) complete(input cli.Input) error {
 }
 
 func (opts *UpdateSubCommand) run(input cli.Input) error {
-	_, err := opts.client.MessageQueueTriggerUpdate(opts.trigger)
+	_, err := opts.client.V1().MessageQueueTrigger().Update(opts.trigger)
 	if err != nil {
 		return errors.Wrap(err, "error updating message queue trigger")
 	}

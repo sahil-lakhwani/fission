@@ -32,7 +32,7 @@ import (
 )
 
 type LogSubCommand struct {
-	client *client.Client
+	client client.Interface
 }
 
 func Log(input cli.Input) error {
@@ -57,7 +57,7 @@ func (opts *LogSubCommand) do(input cli.Input) error {
 		recordLimit = 1000
 	}
 
-	f, err := opts.client.FunctionGet(&metav1.ObjectMeta{
+	f, err := opts.client.V1().Function().Get(&metav1.ObjectMeta{
 		Name:      input.String(flagkey.FnName),
 		Namespace: input.String(flagkey.NamespaceFunction),
 	})

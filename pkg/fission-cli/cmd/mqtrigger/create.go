@@ -34,7 +34,7 @@ import (
 )
 
 type CreateSubCommand struct {
-	client  *client.Client
+	client  client.Interface
 	trigger *fv1.MessageQueueTrigger
 }
 
@@ -164,7 +164,7 @@ func (opts *CreateSubCommand) run(input cli.Input) error {
 		return nil
 	}
 
-	_, err := opts.client.MessageQueueTriggerCreate(opts.trigger)
+	_, err := opts.client.V1().MessageQueueTrigger().Create(opts.trigger)
 	if err != nil {
 		return errors.Wrap(err, "create message queue trigger")
 	}
