@@ -22,8 +22,8 @@ import (
 )
 
 type (
-	CommandAction func(input cli.Input) error
-	CommandActioner struct {}
+	CommandAction   func(input cli.Input) error
+	CommandActioner struct{}
 )
 
 func (c *CommandActioner) Client() client.Interface {
