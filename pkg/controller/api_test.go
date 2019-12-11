@@ -32,11 +32,11 @@ import (
 	"k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 
-	"github.com/fission/fission/pkg/controller/client/rest"
-	"github.com/fission/fission/pkg/fission-cli/cmd"
 	fv1 "github.com/fission/fission/pkg/apis/fission.io/v1"
 	"github.com/fission/fission/pkg/controller/client"
+	"github.com/fission/fission/pkg/controller/client/rest"
 	ferror "github.com/fission/fission/pkg/error"
+	"github.com/fission/fission/pkg/fission-cli/cmd"
 )
 
 var g struct {
