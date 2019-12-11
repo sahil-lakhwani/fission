@@ -21,8 +21,8 @@ import (
 
 	fv1 "github.com/fission/fission/pkg/apis/fission.io/v1"
 	"github.com/fission/fission/pkg/fission-cli/cliwrapper/cli"
-	flagkey "github.com/fission/fission/pkg/fission-cli/flag/key"
 	"github.com/fission/fission/pkg/fission-cli/cmd"
+	flagkey "github.com/fission/fission/pkg/fission-cli/flag/key"
 )
 
 type ListSubCommand struct {

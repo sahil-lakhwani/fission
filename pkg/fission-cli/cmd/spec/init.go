@@ -26,8 +26,8 @@ import (
 	"github.com/pkg/errors"
 	uuid "github.com/satori/go.uuid"
 
-	"github.com/fission/fission/pkg/fission-cli/cmd"
 	"github.com/fission/fission/pkg/fission-cli/cliwrapper/cli"
+	"github.com/fission/fission/pkg/fission-cli/cmd"
 	spectypes "github.com/fission/fission/pkg/fission-cli/cmd/spec/types"
 	flagkey "github.com/fission/fission/pkg/fission-cli/flag/key"
 	"github.com/fission/fission/pkg/fission-cli/util"

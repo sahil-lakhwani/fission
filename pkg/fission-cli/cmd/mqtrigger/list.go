@@ -23,8 +23,8 @@ import (
 
 	"github.com/pkg/errors"
 
-	"github.com/fission/fission/pkg/fission-cli/cmd"
 	"github.com/fission/fission/pkg/fission-cli/cliwrapper/cli"
+	"github.com/fission/fission/pkg/fission-cli/cmd"
 	flagkey "github.com/fission/fission/pkg/fission-cli/flag/key"
 )
 

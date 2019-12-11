@@ -27,9 +27,9 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 
 	fv1 "github.com/fission/fission/pkg/apis/fission.io/v1"
-	"github.com/fission/fission/pkg/fission-cli/cmd"
 	ferror "github.com/fission/fission/pkg/error"
 	"github.com/fission/fission/pkg/fission-cli/cliwrapper/cli"
+	"github.com/fission/fission/pkg/fission-cli/cmd"
 	"github.com/fission/fission/pkg/fission-cli/cmd/httptrigger"
 	_package "github.com/fission/fission/pkg/fission-cli/cmd/package"
 	"github.com/fission/fission/pkg/fission-cli/cmd/spec"

@@ -24,15 +24,15 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 
 	fv1 "github.com/fission/fission/pkg/apis/fission.io/v1"
-	"github.com/fission/fission/pkg/fission-cli/cmd"
 	"github.com/fission/fission/pkg/fission-cli/cliwrapper/cli"
+	"github.com/fission/fission/pkg/fission-cli/cmd"
 	flagkey "github.com/fission/fission/pkg/fission-cli/flag/key"
 	"github.com/fission/fission/pkg/utils"
 )
 
 type UpdateSubCommand struct {
 	cmd.CommandActioner
-	env    *fv1.Environment
+	env *fv1.Environment
 }
 
 func Update(input cli.Input) error {

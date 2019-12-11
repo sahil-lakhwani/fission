@@ -22,8 +22,8 @@ import (
 	"github.com/ghodss/yaml"
 	"github.com/pkg/errors"
 
-	"github.com/fission/fission/pkg/fission-cli/cmd"
 	"github.com/fission/fission/pkg/fission-cli/cliwrapper/cli"
+	"github.com/fission/fission/pkg/fission-cli/cmd"
 	"github.com/fission/fission/pkg/fission-cli/util"
 )
 

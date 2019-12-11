@@ -3,9 +3,12 @@ package app
 import (
 	"github.com/spf13/cobra"
 
+	"github.com/fission/fission/pkg/controller/client"
+	"github.com/fission/fission/pkg/controller/client/rest"
 	"github.com/fission/fission/pkg/fission-cli/cliwrapper/cli"
 	wrapper "github.com/fission/fission/pkg/fission-cli/cliwrapper/driver/cobra"
 	"github.com/fission/fission/pkg/fission-cli/cliwrapper/driver/cobra/helptemplate"
+	"github.com/fission/fission/pkg/fission-cli/cmd"
 	"github.com/fission/fission/pkg/fission-cli/cmd/canaryconfig"
 	"github.com/fission/fission/pkg/fission-cli/cmd/environment"
 	"github.com/fission/fission/pkg/fission-cli/cmd/function"
@@ -20,10 +23,7 @@ import (
 	"github.com/fission/fission/pkg/fission-cli/console"
 	"github.com/fission/fission/pkg/fission-cli/flag"
 	flagkey "github.com/fission/fission/pkg/fission-cli/flag/key"
-	"github.com/fission/fission/pkg/controller/client"
 	"github.com/fission/fission/pkg/fission-cli/util"
-	"github.com/fission/fission/pkg/controller/client/rest"
-	"github.com/fission/fission/pkg/fission-cli/cmd"
 )
 
 const (

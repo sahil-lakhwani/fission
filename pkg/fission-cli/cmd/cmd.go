@@ -29,7 +29,7 @@ type (
 )
 
 var (
-	once = sync.Once{}
+	once             = sync.Once{}
 	defaultClientset client.Interface
 )
 
