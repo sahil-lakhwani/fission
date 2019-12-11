@@ -28,6 +28,7 @@ import (
 	"github.com/pkg/errors"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 
+	"github.com/fission/fission/pkg/fission-cli/cmd"
 	"github.com/fission/fission/pkg/controller/client"
 	"github.com/fission/fission/pkg/fission-cli/cliwrapper/cli"
 	"github.com/fission/fission/pkg/fission-cli/cmd/httptrigger"
@@ -37,18 +38,11 @@ import (
 )
 
 type TestSubCommand struct {
-	client client.Interface
+	cmd.CommandActioner
 }
 
 func Test(input cli.Input) error {
-	c, err := util.GetServer(input)
-	if err != nil {
-		return err
-	}
-	opts := TestSubCommand{
-		client: c,
-	}
-	return opts.do(input)
+	return (&TestSubCommand{}).do(input)
 }
 
 func (opts *TestSubCommand) do(input cli.Input) error {
@@ -125,7 +119,7 @@ func (opts *TestSubCommand) do(input cli.Input) error {
 	}
 
 	console.Errorf("Error calling function %s: %d; Please try again or fix the error: %s\n", m.Name, resp.StatusCode, string(body))
-	log, err := printPodLogs(opts.client, m)
+	log, err := printPodLogs(opts.Client(), m)
 	if err != nil {
 		console.Errorf("Error getting function logs from controller: %v. Try to get logs from log database.", err)
 		err = Log(input)

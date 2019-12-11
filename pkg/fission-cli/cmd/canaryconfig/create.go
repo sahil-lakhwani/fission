@@ -24,7 +24,7 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 
 	fv1 "github.com/fission/fission/pkg/apis/fission.io/v1"
-	"github.com/fission/fission/pkg/controller/client"
+	"github.com/fission/fission/pkg/fission-cli/cmd"
 	"github.com/fission/fission/pkg/fission-cli/cliwrapper/cli"
 	flagkey "github.com/fission/fission/pkg/fission-cli/flag/key"
 	"github.com/fission/fission/pkg/fission-cli/util"
@@ -32,19 +32,12 @@ import (
 )
 
 type CreateSubCommand struct {
-	client client.Interface
+	cmd.CommandActioner
 	canary *fv1.CanaryConfig
 }
 
 func Create(input cli.Input) error {
-	c, err := util.GetServer(input)
-	if err != nil {
-		return err
-	}
-	opts := CreateSubCommand{
-		client: c,
-	}
-	return opts.do(input)
+	return (&CreateSubCommand{}).do(input)
 }
 
 func (opts *CreateSubCommand) do(input cli.Input) error {
@@ -74,7 +67,7 @@ func (opts *CreateSubCommand) complete(input cli.Input) error {
 	}
 
 	// check that the trigger exists in the same namespace.
-	htTrigger, err := opts.client.V1().HTTPTrigger().Get(&metav1.ObjectMeta{
+	htTrigger, err := opts.Client().V1().HTTPTrigger().Get(&metav1.ObjectMeta{
 		Name:      ht,
 		Namespace: fnNs,
 	})
@@ -100,7 +93,7 @@ func (opts *CreateSubCommand) complete(input cli.Input) error {
 
 	// check that the functions exist in the same namespace
 	fnList := []string{newFunc, oldFunc}
-	err = util.CheckFunctionExistence(opts.client, fnList, fnNs)
+	err = util.CheckFunctionExistence(opts.Client(), fnList, fnNs)
 	if err != nil {
 		return errors.Wrap(err, "error checking functions existence")
 	}
@@ -129,7 +122,7 @@ func (opts *CreateSubCommand) complete(input cli.Input) error {
 }
 
 func (opts *CreateSubCommand) run(input cli.Input) error {
-	_, err := opts.client.V1().CanaryConfig().Create(opts.canary)
+	_, err := opts.Client().V1().CanaryConfig().Create(opts.canary)
 	if err != nil {
 		return errors.Wrap(err, "error creating canary config")
 	}

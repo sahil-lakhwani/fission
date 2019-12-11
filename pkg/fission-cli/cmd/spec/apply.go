@@ -31,6 +31,7 @@ import (
 	"github.com/pkg/errors"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 
+	"github.com/fission/fission/pkg/fission-cli/cmd"
 	fv1 "github.com/fission/fission/pkg/apis/fission.io/v1"
 	"github.com/fission/fission/pkg/controller/client"
 	"github.com/fission/fission/pkg/fission-cli/cliwrapper/cli"
@@ -44,7 +45,7 @@ import (
 )
 
 type ApplySubCommand struct {
-	client client.Interface
+	cmd.CommandActioner
 }
 
 // Apply compares the specs in the spec/config/ directory to the
@@ -57,14 +58,7 @@ type ApplySubCommand struct {
 // etc, while doing an apply, they will get a partially applied deployment.  However,
 // they can retry their apply command once they're back online.
 func Apply(input cli.Input) error {
-	c, err := util.GetServer(input)
-	if err != nil {
-		return err
-	}
-	opts := ApplySubCommand{
-		client: c,
-	}
-	return opts.do(input)
+	return (&ApplySubCommand{}).do(input)
 }
 
 func (opts *ApplySubCommand) do(input cli.Input) error {
@@ -83,7 +77,7 @@ func (opts *ApplySubCommand) run(input cli.Input) error {
 
 	if watchResources || waitForBuild {
 		// init package build watcher
-		pbw = makePackageBuildWatcher(opts.client)
+		pbw = makePackageBuildWatcher(opts.Client())
 	}
 
 	if watchResources {
@@ -129,7 +123,7 @@ func (opts *ApplySubCommand) run(input cli.Input) error {
 		}
 
 		// make changes to the cluster based on the specs
-		pkgMetas, as, err := applyResources(opts.client, specDir, fr, deleteResources)
+		pkgMetas, as, err := applyResources(opts.Client(), specDir, fr, deleteResources)
 		if err != nil {
 			return errors.Wrap(err, "error applying specs")
 		}

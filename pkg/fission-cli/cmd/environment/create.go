@@ -23,8 +23,8 @@ import (
 	"github.com/pkg/errors"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 
+	"github.com/fission/fission/pkg/fission-cli/cmd"
 	fv1 "github.com/fission/fission/pkg/apis/fission.io/v1"
-	"github.com/fission/fission/pkg/controller/client"
 	"github.com/fission/fission/pkg/fission-cli/cliwrapper/cli"
 	"github.com/fission/fission/pkg/fission-cli/cmd/spec"
 	"github.com/fission/fission/pkg/fission-cli/console"
@@ -34,19 +34,12 @@ import (
 )
 
 type CreateSubCommand struct {
-	client client.Interface
+	cmd.CommandActioner
 	env    *fv1.Environment
 }
 
 func Create(input cli.Input) error {
-	c, err := util.GetServer(input)
-	if err != nil {
-		return err
-	}
-	opts := CreateSubCommand{
-		client: c,
-	}
-	return opts.do(input)
+	return (&CreateSubCommand{}).do(input)
 }
 
 func (opts *CreateSubCommand) do(input cli.Input) error {
@@ -72,7 +65,7 @@ func (opts *CreateSubCommand) complete(input cli.Input) error {
 func (opts *CreateSubCommand) run(input cli.Input) error {
 	m := opts.env.Metadata
 
-	envList, err := opts.client.V1().Environment().List(m.Namespace)
+	envList, err := opts.Client().V1().Environment().List(m.Namespace)
 	if err != nil {
 		return err
 	} else if len(envList) > 0 {
@@ -92,7 +85,7 @@ func (opts *CreateSubCommand) run(input cli.Input) error {
 		return nil
 	}
 
-	_, err = opts.client.V1().Environment().Create(opts.env)
+	_, err = opts.Client().V1().Environment().Create(opts.env)
 	if err != nil {
 		return errors.Wrap(err, "error creating environment")
 	}

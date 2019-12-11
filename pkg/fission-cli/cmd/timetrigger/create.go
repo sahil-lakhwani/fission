@@ -18,6 +18,7 @@ package timetrigger
 
 import (
 	"fmt"
+	"github.com/fission/fission/pkg/fission-cli/cmd"
 	"time"
 
 	"github.com/pkg/errors"
@@ -35,19 +36,12 @@ import (
 )
 
 type CreateSubCommand struct {
-	client  client.Interface
+	cmd.CommandActioner
 	trigger *fv1.TimeTrigger
 }
 
 func Create(input cli.Input) error {
-	c, err := util.GetServer(input)
-	if err != nil {
-		return err
-	}
-	opts := CreateSubCommand{
-		client: c,
-	}
-	return opts.do(input)
+	return (&CreateSubCommand{}).do(input)
 }
 
 func (opts *CreateSubCommand) do(input cli.Input) error {
@@ -126,14 +120,14 @@ func (opts *CreateSubCommand) run(input cli.Input) error {
 		return nil
 	}
 
-	_, err := opts.client.V1().TimeTrigger().Create(opts.trigger)
+	_, err := opts.Client().V1().TimeTrigger().Create(opts.trigger)
 	if err != nil {
 		return errors.Wrap(err, "error creating Time trigger")
 	}
 
 	fmt.Printf("trigger '%v' created\n", opts.trigger.Metadata.Name)
 
-	t, err := getAPITimeInfo(opts.client)
+	t, err := getAPITimeInfo(opts.Client())
 	if err != nil {
 		return err
 	}

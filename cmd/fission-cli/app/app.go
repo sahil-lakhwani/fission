@@ -1,11 +1,7 @@
 package app
 
 import (
-	"github.com/fission/fission/pkg/controller/client"
-	"github.com/fission/fission/pkg/controller/client/rest"
-	"github.com/fission/fission/pkg/fission-cli/util"
 	"github.com/spf13/cobra"
-	"strings"
 
 	"github.com/fission/fission/pkg/fission-cli/cliwrapper/cli"
 	wrapper "github.com/fission/fission/pkg/fission-cli/cliwrapper/driver/cobra"
@@ -24,6 +20,10 @@ import (
 	"github.com/fission/fission/pkg/fission-cli/console"
 	"github.com/fission/fission/pkg/fission-cli/flag"
 	flagkey "github.com/fission/fission/pkg/fission-cli/flag/key"
+	"github.com/fission/fission/pkg/controller/client"
+	"github.com/fission/fission/pkg/fission-cli/util"
+	"github.com/fission/fission/pkg/controller/client/rest"
+	"github.com/fission/fission/pkg/fission-cli/cmd"
 )
 
 const (
@@ -44,12 +44,13 @@ func App() *cobra.Command {
 		PersistentPreRunE: wrapper.Wrapper(
 			func(input cli.Input) error {
 				console.Verbosity = input.Int(flagkey.Verbosity)
-				serverUrl, err := getServerURL(input)
+				serverUrl, err := util.GetServerURL(input)
 				if err != nil {
 					return err
 				}
 				restClient := rest.NewRESTClient(serverUrl)
-				client.SetRESTClient(restClient)
+				// TODO: use fake rest client for offline spec generation
+				cmd.SetClientset(client.MakeClientset(restClient))
 				return nil
 			},
 		),
@@ -79,24 +80,4 @@ func App() *cobra.Command {
 	flagExposer.ExposeFlags(rootCmd, flagkey.Server, flagkey.Verbosity)
 
 	return rootCmd
-}
-
-func getServerURL(input cli.Input) (serverUrl string, err error) {
-	serverUrl = input.GlobalString(flagkey.Server)
-	if len(serverUrl) == 0 {
-		// starts local portforwarder etc.
-		serverUrl, err = util.GetApplicationUrl("application=fission-api")
-		if err != nil {
-			return "", err
-		}
-	}
-
-	isHTTPS := strings.Index(serverUrl, "https://") == 0
-	isHTTP := strings.Index(serverUrl, "http://") == 0
-
-	if !(isHTTP || isHTTPS) {
-		serverUrl = "http://" + serverUrl
-	}
-
-	return serverUrl, nil
 }

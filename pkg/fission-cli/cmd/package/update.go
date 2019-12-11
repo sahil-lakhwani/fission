@@ -28,25 +28,18 @@ import (
 	"github.com/fission/fission/pkg/controller/client"
 	"github.com/fission/fission/pkg/fission-cli/cliwrapper/cli"
 	flagkey "github.com/fission/fission/pkg/fission-cli/flag/key"
-	"github.com/fission/fission/pkg/fission-cli/util"
+	"github.com/fission/fission/pkg/fission-cli/cmd"
 )
 
 type UpdateSubCommand struct {
-	client       client.Interface
+	cmd.CommandActioner
 	pkgName      string
 	pkgNamespace string
 	force        bool
 }
 
 func Update(input cli.Input) error {
-	c, err := util.GetServer(input)
-	if err != nil {
-		return err
-	}
-	opts := UpdateSubCommand{
-		client: c,
-	}
-	return opts.do(input)
+	return (&UpdateSubCommand{}).do(input)
 }
 
 func (opts *UpdateSubCommand) do(input cli.Input) error {
@@ -65,7 +58,7 @@ func (opts *UpdateSubCommand) complete(input cli.Input) error {
 }
 
 func (opts *UpdateSubCommand) run(input cli.Input) error {
-	pkg, err := opts.client.V1().Package().Get(&metav1.ObjectMeta{
+	pkg, err := opts.Client().V1().Package().Get(&metav1.ObjectMeta{
 		Namespace: opts.pkgNamespace,
 		Name:      opts.pkgName,
 	})
@@ -75,7 +68,7 @@ func (opts *UpdateSubCommand) run(input cli.Input) error {
 
 	forceUpdate := input.Bool(flagkey.PkgForce)
 
-	fnList, err := GetFunctionsByPackage(opts.client, pkg.Metadata.Name, pkg.Metadata.Namespace)
+	fnList, err := GetFunctionsByPackage(opts.Client(), pkg.Metadata.Name, pkg.Metadata.Namespace)
 	if err != nil {
 		return errors.Wrap(err, "error getting function list")
 	}
@@ -84,13 +77,13 @@ func (opts *UpdateSubCommand) run(input cli.Input) error {
 		return errors.Errorf("package is used by multiple functions, use --%v to force update", flagkey.PkgForce)
 	}
 
-	newPkgMeta, err := UpdatePackage(input, opts.client, pkg)
+	newPkgMeta, err := UpdatePackage(input, opts.Client(), pkg)
 	if err != nil {
 		return errors.Wrap(err, "error updating package")
 	}
 
 	if pkg.Metadata.ResourceVersion != newPkgMeta.ResourceVersion {
-		err = UpdateFunctionPackageResourceVersion(opts.client, newPkgMeta, fnList...)
+		err = UpdateFunctionPackageResourceVersion(opts.Client(), newPkgMeta, fnList...)
 		if err != nil {
 			return errors.Wrap(err, "error updating function package reference resource version")
 		}

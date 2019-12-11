@@ -38,7 +38,7 @@ import (
 )
 
 var g struct {
-	client client.Interface
+	cmd.CommandActioner
 }
 
 func panicIf(err error) {

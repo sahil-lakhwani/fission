@@ -197,12 +197,20 @@ func GetVersion(client client.Interface) info.Versions {
 }
 
 func GetServer(input cli.Input) (c client.Interface, err error) {
-	serverUrl := input.GlobalString(flagkey.Server)
+	serverUrl, err := GetServerURL(input)
+	if err != nil {
+		return nil, err
+	}
+	return client.MakeClientset(rest.NewRESTClient(serverUrl)), nil
+}
+
+func GetServerURL(input cli.Input) (serverUrl string, err error) {
+	serverUrl = input.GlobalString(flagkey.Server)
 	if len(serverUrl) == 0 {
 		// starts local portforwarder etc.
 		serverUrl, err = GetApplicationUrl("application=fission-api")
 		if err != nil {
-			return nil, err
+			return "", err
 		}
 	}
 
@@ -213,7 +221,7 @@ func GetServer(input cli.Input) (c client.Interface, err error) {
 		serverUrl = "http://" + serverUrl
 	}
 
-	return client.MakeClientset(rest.NewRESTClient(serverUrl)), nil
+	return serverUrl, nil
 }
 
 func GetResourceReqs(input cli.Input, resReqs *v1.ResourceRequirements) (*v1.ResourceRequirements, error) {

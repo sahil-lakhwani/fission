@@ -24,29 +24,21 @@ import (
 	"github.com/pkg/errors"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 
-	"github.com/fission/fission/pkg/controller/client"
 	"github.com/fission/fission/pkg/fission-cli/cliwrapper/cli"
 	flagkey "github.com/fission/fission/pkg/fission-cli/flag/key"
-	"github.com/fission/fission/pkg/fission-cli/util"
+	"github.com/fission/fission/pkg/fission-cli/cmd"
 )
 
 type GetMetaSubCommand struct {
-	client client.Interface
+	cmd.CommandActioner
 }
 
 func GetMeta(input cli.Input) error {
-	c, err := util.GetServer(input)
-	if err != nil {
-		return err
-	}
-	opts := GetMetaSubCommand{
-		client: c,
-	}
-	return opts.do(input)
+	return (&GetMetaSubCommand{}).do(input)
 }
 
 func (opts *GetMetaSubCommand) do(input cli.Input) error {
-	fn, err := opts.client.V1().Function().Get(&metav1.ObjectMeta{
+	fn, err := opts.Client().V1().Function().Get(&metav1.ObjectMeta{
 		Name:      input.String(flagkey.FnName),
 		Namespace: input.String(flagkey.NamespaceFunction),
 	})

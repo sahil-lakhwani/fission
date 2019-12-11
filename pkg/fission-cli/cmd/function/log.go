@@ -24,7 +24,7 @@ import (
 	"github.com/pkg/errors"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 
-	"github.com/fission/fission/pkg/controller/client"
+	"github.com/fission/fission/pkg/fission-cli/cmd"
 	"github.com/fission/fission/pkg/fission-cli/cliwrapper/cli"
 	flagkey "github.com/fission/fission/pkg/fission-cli/flag/key"
 	"github.com/fission/fission/pkg/fission-cli/logdb"
@@ -32,18 +32,11 @@ import (
 )
 
 type LogSubCommand struct {
-	client client.Interface
+	cmd.CommandActioner
 }
 
 func Log(input cli.Input) error {
-	c, err := util.GetServer(input)
-	if err != nil {
-		return err
-	}
-	opts := LogSubCommand{
-		client: c,
-	}
-	return opts.do(input)
+	return (&LogSubCommand{}).do(input)
 }
 
 func (opts *LogSubCommand) do(input cli.Input) error {
@@ -57,7 +50,7 @@ func (opts *LogSubCommand) do(input cli.Input) error {
 		recordLimit = 1000
 	}
 
-	f, err := opts.client.V1().Function().Get(&metav1.ObjectMeta{
+	f, err := opts.Client().V1().Function().Get(&metav1.ObjectMeta{
 		Name:      input.String(flagkey.FnName),
 		Namespace: input.String(flagkey.NamespaceFunction),
 	})

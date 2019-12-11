@@ -27,6 +27,7 @@ import (
 	uuid "github.com/satori/go.uuid"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 
+	"github.com/fission/fission/pkg/fission-cli/cmd"
 	fv1 "github.com/fission/fission/pkg/apis/fission.io/v1"
 	"github.com/fission/fission/pkg/controller/client"
 	"github.com/fission/fission/pkg/fission-cli/cliwrapper/cli"
@@ -37,18 +38,11 @@ import (
 )
 
 type CreateSubCommand struct {
-	client client.Interface
+	cmd.CommandActioner
 }
 
 func Create(input cli.Input) error {
-	c, err := util.GetServer(input)
-	if err != nil {
-		return err
-	}
-	opts := CreateSubCommand{
-		client: c,
-	}
-	return opts.do(input)
+	return (&CreateSubCommand{}).do(input)
 }
 
 func (opts *CreateSubCommand) do(input cli.Input) error {
@@ -114,7 +108,7 @@ func (opts *CreateSubCommand) run(input cli.Input) error {
 		specFile = fmt.Sprintf("package-%v.yaml", pkgName)
 	}
 
-	_, err := CreatePackage(input, opts.client, pkgName, pkgNamespace, envName, envNamespace,
+	_, err := CreatePackage(input, opts.Client(), pkgName, pkgNamespace, envName, envNamespace,
 		srcArchiveFiles, deployArchiveFiles, buildcmd, specDir, specFile, noZip)
 
 	return err

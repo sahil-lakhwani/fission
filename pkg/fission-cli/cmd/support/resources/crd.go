@@ -39,7 +39,7 @@ const (
 )
 
 type CrdDumper struct {
-	client  client.Interface
+	client client.Interface
 	crdType string
 }
 
