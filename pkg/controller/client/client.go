@@ -28,16 +28,27 @@ type (
 	}
 
 	Clientset struct {
+		restClient rest.Interface
 		v1        *v1.V1Client
-		serverURL string
 	}
 )
 
-func MakeClientset(serverURL string) Interface {
-	restC := rest.MakeRestClient(serverURL)
+var (
+	defaultRESTClient rest.Interface
+)
+
+func SetRESTClient(restClient rest.Interface) {
+	defaultRESTClient = restClient
+}
+
+func GetRESTClient() rest.Interface {
+	return defaultRESTClient
+}
+
+func MakeClientset(restClient rest.Interface) Interface {
 	return &Clientset{
-		v1:        v1.MakeV1Client(restC),
-		serverURL: serverURL,
+		v1:        v1.MakeV1Client(restClient),
+		restClient: restClient,
 	}
 }
 
@@ -46,5 +57,5 @@ func (c *Clientset) V1() v1.V1Interface {
 }
 
 func (c *Clientset) ServerURL() string {
-	return c.serverURL
+	return c.restClient.ServerURL()
 }

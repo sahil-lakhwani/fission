@@ -124,7 +124,7 @@ func (c *Misc) GetSvcURL(label string) (string, error) {
 }
 
 func (c *Misc) ServerInfo() (*info.ServerInfo, error) {
-	resp, err := c.client.GetServerInfo()
+	resp, err := c.client.ServerInfo()
 	if err != nil {
 		return nil, err
 	}

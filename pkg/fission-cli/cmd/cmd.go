@@ -17,9 +17,16 @@ limitations under the License.
 package cmd
 
 import (
+	"github.com/fission/fission/pkg/controller/client"
 	"github.com/fission/fission/pkg/fission-cli/cliwrapper/cli"
 )
 
 type (
 	CommandAction func(input cli.Input) error
+	CommandActioner struct {}
 )
+
+func (c *CommandActioner) Client() client.Interface {
+	restClient := client.GetRESTClient()
+	return client.MakeClientset(restClient)
+}

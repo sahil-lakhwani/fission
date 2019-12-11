@@ -18,6 +18,7 @@ package util
 
 import (
 	"fmt"
+	"github.com/fission/fission/pkg/controller/client/rest"
 	"os"
 	"os/user"
 	"path/filepath"
@@ -212,7 +213,7 @@ func GetServer(input cli.Input) (c client.Interface, err error) {
 		serverUrl = "http://" + serverUrl
 	}
 
-	return client.MakeClientset(serverUrl), nil
+	return client.MakeClientset(rest.NewRESTClient(serverUrl)), nil
 }
 
 func GetResourceReqs(input cli.Input, resReqs *v1.ResourceRequirements) (*v1.ResourceRequirements, error) {

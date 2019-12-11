@@ -13,27 +13,18 @@ import (
 )
 
 type (
-	Interface interface {
-		Create(relativeUrl string, contentType string, payload []byte) (*http.Response, error)
-		Put(relativeUrl string, contentType string, payload []byte) (*http.Response, error)
-		Get(relativeUrl string) (*http.Response, error)
-		Delete(relativeUrl string) error
-		Proxy(method string, relativeUrl string, payload []byte) (*http.Response, error)
-		GetServerInfo() (*http.Response, error)
-	}
-
-	RESTClient struct {
+	FakeRESTClient struct {
 		url string
 	}
 )
 
-func MakeRestClient(serverUrl string) Interface {
-	return &RESTClient{
+func NewFakeRESTClient(serverUrl string) Interface {
+	return &FakeRESTClient{
 		url: strings.TrimSuffix(serverUrl, "/"),
 	}
 }
 
-func (c *RESTClient) Create(relativeUrl string, contentType string, payload []byte) (*http.Response, error) {
+func (c *FakeRESTClient) Create(relativeUrl string, contentType string, payload []byte) (*http.Response, error) {
 	var reader io.Reader
 	if len(payload) > 0 {
 		reader = bytes.NewReader(payload)
@@ -41,7 +32,7 @@ func (c *RESTClient) Create(relativeUrl string, contentType string, payload []by
 	return c.sendRequest(http.MethodPost, c.v2CrdUrl(relativeUrl), map[string]string{"Content-type": contentType}, reader)
 }
 
-func (c *RESTClient) Put(relativeUrl string, contentType string, payload []byte) (*http.Response, error) {
+func (c *FakeRESTClient) Put(relativeUrl string, contentType string, payload []byte) (*http.Response, error) {
 	var reader io.Reader
 	if len(payload) > 0 {
 		reader = bytes.NewReader(payload)
@@ -49,11 +40,11 @@ func (c *RESTClient) Put(relativeUrl string, contentType string, payload []byte)
 	return c.sendRequest(http.MethodPut, c.v2CrdUrl(relativeUrl), map[string]string{"Content-type": contentType}, reader)
 }
 
-func (c *RESTClient) Get(relativeUrl string) (*http.Response, error) {
+func (c *FakeRESTClient) Get(relativeUrl string) (*http.Response, error) {
 	return c.sendRequest(http.MethodGet, c.v2CrdUrl(relativeUrl), nil, nil)
 }
 
-func (c *RESTClient) Delete(relativeUrl string) error {
+func (c *FakeRESTClient) Delete(relativeUrl string) error {
 	resp, err := c.sendRequest(http.MethodDelete, c.v2CrdUrl(relativeUrl), nil, nil)
 	if err != nil {
 		return err
@@ -72,7 +63,7 @@ func (c *RESTClient) Delete(relativeUrl string) error {
 	return nil
 }
 
-func (c *RESTClient) Proxy(method string, relativeUrl string, payload []byte) (*http.Response, error) {
+func (c *FakeRESTClient) Proxy(method string, relativeUrl string, payload []byte) (*http.Response, error) {
 	var reader io.Reader
 	if len(payload) > 0 {
 		reader = bytes.NewReader(payload)
@@ -80,11 +71,15 @@ func (c *RESTClient) Proxy(method string, relativeUrl string, payload []byte) (*
 	return c.sendRequest(method, c.proxyUrl(relativeUrl), nil, reader)
 }
 
-func (c *RESTClient) GetServerInfo() (*http.Response, error) {
+func (c *FakeRESTClient) ServerInfo() (*http.Response, error) {
 	return c.sendRequest(http.MethodGet, c.url, nil, nil)
 }
 
-func (c *RESTClient) sendRequest(method string, relativeUrl string, headers map[string]string, reader io.Reader) (*http.Response, error) {
+func (c *FakeRESTClient) ServerURL() string {
+	return c.url
+}
+
+func (c *FakeRESTClient) sendRequest(method string, relativeUrl string, headers map[string]string, reader io.Reader) (*http.Response, error) {
 	req, err := http.NewRequest(method, relativeUrl, reader)
 	if err != nil {
 		return nil, err
@@ -96,10 +91,10 @@ func (c *RESTClient) sendRequest(method string, relativeUrl string, headers map[
 	return ctxhttp.Do(context.Background(), &http.Client{}, req)
 }
 
-func (c *RESTClient) v2CrdUrl(relativeUrl string) string {
+func (c *FakeRESTClient) v2CrdUrl(relativeUrl string) string {
 	return c.url + "/v2/" + strings.TrimPrefix(relativeUrl, "/")
 }
 
-func (c *RESTClient) proxyUrl(relativeUrl string) string {
+func (c *FakeRESTClient) proxyUrl(relativeUrl string) string {
 	return c.url + "/proxy/" + strings.TrimPrefix(relativeUrl, "/")
 }
