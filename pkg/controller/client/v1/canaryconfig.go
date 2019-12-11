@@ -44,7 +44,7 @@ type (
 	}
 )
 
-func newCanaryConfigClient(c *V1Client) CanaryConfigInterface {
+func newCanaryConfigClient(c *V1) CanaryConfigInterface {
 	return &CanaryConfig{client: c.restClient}
 }
 

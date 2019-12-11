@@ -44,7 +44,7 @@ type (
 	}
 )
 
-func newPackageClient(c *V1Client) PackageInterface {
+func newPackageClient(c *V1) PackageInterface {
 	return &Package{client: c.restClient}
 }
 

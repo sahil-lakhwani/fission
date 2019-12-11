@@ -44,7 +44,7 @@ type (
 	}
 )
 
-func newMessageQueueTrigger(c *V1Client) MessageQueueTriggerInterface {
+func newMessageQueueTrigger(c *V1) MessageQueueTriggerInterface {
 	return &MessageQueueTrigger{client: c.restClient}
 }
 

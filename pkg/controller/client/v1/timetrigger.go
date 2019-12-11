@@ -44,7 +44,7 @@ type (
 	}
 )
 
-func newTimeTriggerClient(c *V1Client) TimeTriggerInterface {
+func newTimeTriggerClient(c *V1) TimeTriggerInterface {
 	return &TimeTrigger{client: c.restClient}
 }
 

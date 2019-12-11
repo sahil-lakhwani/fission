@@ -45,7 +45,7 @@ type (
 	}
 )
 
-func newKubeWatcher(c *V1Client) KubeWatcherInterface {
+func newKubeWatcher(c *V1) KubeWatcherInterface {
 	return &KubeWatcher{client: c.restClient}
 }
 

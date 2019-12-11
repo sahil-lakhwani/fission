@@ -22,48 +22,48 @@ type (
 		TimeTriggerGetter
 	}
 
-	V1Client struct {
+	V1 struct {
 		restClient rest.Interface
 	}
 )
 
-func MakeV1Client(restClient rest.Interface) *V1Client {
-	return &V1Client{restClient: restClient}
+func MakeV1Client(restClient rest.Interface) *V1 {
+	return &V1{restClient: restClient}
 }
 
-func (c *V1Client) Misc() MiscInterface {
+func (c *V1) Misc() MiscInterface {
 	return newMiscClient(c)
 }
 
-func (c *V1Client) CanaryConfig() CanaryConfigInterface {
+func (c *V1) CanaryConfig() CanaryConfigInterface {
 	return newCanaryConfigClient(c)
 }
 
-func (c *V1Client) Environment() EnvironmentInterface {
+func (c *V1) Environment() EnvironmentInterface {
 	return newEnvironmentClient(c)
 }
 
-func (c *V1Client) Function() FunctionInterface {
+func (c *V1) Function() FunctionInterface {
 	return newFunctionClient(c)
 }
 
-func (c *V1Client) HTTPTrigger() HTTPTriggerInterface {
+func (c *V1) HTTPTrigger() HTTPTriggerInterface {
 	return newHTTPTriggerClient(c)
 }
 
-func (c *V1Client) KubeWatcher() KubeWatcherInterface {
+func (c *V1) KubeWatcher() KubeWatcherInterface {
 	return newKubeWatcher(c)
 }
 
-func (c *V1Client) MessageQueueTrigger() MessageQueueTriggerInterface {
+func (c *V1) MessageQueueTrigger() MessageQueueTriggerInterface {
 	return newMessageQueueTrigger(c)
 }
 
-func (c *V1Client) Package() PackageInterface {
+func (c *V1) Package() PackageInterface {
 	return newPackageClient(c)
 }
 
-func (c *V1Client) TimeTrigger() TimeTriggerInterface {
+func (c *V1) TimeTrigger() TimeTriggerInterface {
 	return newTimeTriggerClient(c)
 }
 

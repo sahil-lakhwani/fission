@@ -54,7 +54,7 @@ func getEnvEncodingPayload(env *fv1.Environment) ([]byte, error) {
 	return generator.StructuredGenerate(encoder.DefaultJSONEncoder())
 }
 
-func newEnvironmentClient(c *V1Client) EnvironmentInterface {
+func newEnvironmentClient(c *V1) EnvironmentInterface {
 	return &Environment{client: c.restClient}
 }
 

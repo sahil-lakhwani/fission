@@ -45,7 +45,7 @@ type (
 	}
 )
 
-func newFunctionClient(c *V1Client) FunctionInterface {
+func newFunctionClient(c *V1) FunctionInterface {
 	return &Function{client: c.restClient}
 }
 

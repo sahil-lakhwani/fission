@@ -44,7 +44,7 @@ type (
 	}
 )
 
-func newHTTPTriggerClient(c *V1Client) HTTPTriggerInterface {
+func newHTTPTriggerClient(c *V1) HTTPTriggerInterface {
 	return &HTTPTrigger{client: c.restClient}
 }
 

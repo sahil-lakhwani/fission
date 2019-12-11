@@ -51,7 +51,7 @@ type (
 	}
 )
 
-func newMiscClient(c *V1Client) MiscInterface {
+func newMiscClient(c *V1) MiscInterface {
 	return &Misc{client: c.restClient}
 }
 
