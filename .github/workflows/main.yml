@@ -31,7 +31,6 @@ jobs:
     
     - name: Static code analysis
       run: |
-       ./hack/verify-staticcheck.sh
        ./hack/verify-gofmt.sh
        ./hack/verify-govet.sh
        ./helm lint charts/fission-all/ charts/fission-core/
