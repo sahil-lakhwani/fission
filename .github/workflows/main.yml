@@ -39,5 +39,11 @@ jobs:
     - name: Go test cases 
       run: ./hack/runtests.sh
     
+    - name: Install Fission
+      uses: hiberbee/github-action-skaffold@1.4.0
+      with:
+        command: run
+        profile: kind
+
     - name: Fission test cases 
-      run: ./test/test.sh
+      run: ./test/kind_test.sh
