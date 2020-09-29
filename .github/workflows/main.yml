@@ -33,11 +33,11 @@ jobs:
       run: |
        ./hack/verify-gofmt.sh
        ./hack/verify-govet.sh
-       ./helm lint charts/fission-all/ charts/fission-core/
+       helm lint charts/fission-all/ charts/fission-core/
      
 
     - name: Go test cases 
       run: ./hack/runtests.sh
     
     - name: Fission test cases 
-      run: ./hack/runtests.sh
+      run: ./test/test.sh
