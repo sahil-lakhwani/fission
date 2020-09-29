@@ -1,0 +1,46 @@
+
+name: Environments build and test 
+
+on: 
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  # Job to run change detection
+  buildenv:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout sources
+      uses: actions/checkout@v2    
+
+    - name: setup go
+      uses: actions/setup-go@v2
+
+
+    - name: Helm
+      if: steps.filter.outputs.any == 'true'
+      uses: Azure/setup-helm@v1
+      
+    - name: Kind Clutser
+      if: steps.filter.outputs.any == 'true'
+      uses: engineerd/setup-kind@v0.4.0
+      
+    - name: Configuring and testing the Installation      
+      run: |
+        kubectl cluster-info --context kind-kind
+        kind get kubeconfig --internal >$HOME/.kube/config
+        kubectl get nodes
+    
+    - name: Static code analysis
+      run: |
+       ./hack/verify-staticcheck.sh
+       ./hack/verify-gofmt.sh
+       ./hack/verify-govet.sh
+       ./helm lint charts/fission-all/ charts/fission-core/
+     
+
+    - name: Go test cases 
+      run: ./hack/runtests.sh
+    
+    - name: Fission test cases 
+      run: ./hack/runtests.sh
