@@ -42,7 +42,7 @@ jobs:
       run: ./hack/runtests.sh
     
     - name: Helm update
-      run: helm dependency update charts/fission-all
+      run: helm repo add stable https://kubernetes-charts.storage.googleapis.com
       
     - name: Install Fission
       uses: hiberbee/github-action-skaffold@1.4.0
