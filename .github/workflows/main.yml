@@ -20,7 +20,7 @@ jobs:
     - name: Helm installation
       uses: Azure/setup-helm@v1
       with:
-        version: 3
+        version: v3.3.4
       
     - name: Kind Clutser
       uses: engineerd/setup-kind@v0.4.0
