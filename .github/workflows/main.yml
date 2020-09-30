@@ -41,6 +41,9 @@ jobs:
     - name: Go test cases 
       run: ./hack/runtests.sh
     
+    - name: Helm update
+      run: helm dependency update charts/fission-all
+      
     - name: Install Fission
       uses: hiberbee/github-action-skaffold@1.4.0
       with:
