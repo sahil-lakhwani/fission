@@ -8,7 +8,7 @@ then
     exit 0
 fi
 
-source ./test_utils.sh
+source ./test/test_utils.sh
 
 dump_system_info
 
