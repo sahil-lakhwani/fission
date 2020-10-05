@@ -51,4 +51,4 @@ jobs:
         profile: kind
 
     - name: Fission test cases 
-      run: sudo ./test/kind_test.sh
+      run: ./test/kind_test.sh
