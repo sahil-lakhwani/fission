@@ -31,11 +31,11 @@ jobs:
         kind get kubeconfig --internal >$HOME/.kube/config
         kubectl get nodes
     
-    - name: Static code analysis
-      run: |
-       ./hack/verify-gofmt.sh
-       ./hack/verify-govet.sh
-       helm lint charts/fission-all/ charts/fission-core/
+#     - name: Static code analysis
+#       run: |
+#        ./hack/verify-gofmt.sh
+#        ./hack/verify-govet.sh
+#        helm lint charts/fission-all/ charts/fission-core/
      
 
     - name: Go test cases 
