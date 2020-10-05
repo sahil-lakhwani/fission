@@ -41,6 +41,9 @@ jobs:
     - name: Go test cases 
       run: ./hack/runtests.sh
     
+    - name: Helm update
+      run: helm repo add stable https://kubernetes-charts.storage.googleapis.com
+      
     - name: Install Fission
       uses: hiberbee/github-action-skaffold@1.4.0
       with:
@@ -48,4 +51,4 @@ jobs:
         profile: kind
 
     - name: Fission test cases 
-      run: ./test/kind_test.sh
+      run: sudo ./test/kind_test.sh
