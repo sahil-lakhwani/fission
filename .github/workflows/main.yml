@@ -51,4 +51,4 @@ jobs:
         profile: kind
 
     - name: Check pods
-      run: kubectl get pods
+      run: kubectl get pods -n fission
