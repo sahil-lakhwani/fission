@@ -50,5 +50,5 @@ jobs:
         command: run
         profile: kind
 
-    - name: Fission test cases 
-      run: ./test/kind_test.sh
+    - name: Check pods
+      run: kubectl get pods
